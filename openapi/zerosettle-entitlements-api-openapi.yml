@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Entitlements API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Entitlements
+  description: Query user entitlements (active purchases and subscriptions)
+paths:
+  /iap/entitlements:
+    get:
+      operationId: getEntitlements
+      summary: Get Entitlements
+      description: Returns all entitlements for a user, including active subscriptions, one-time purchases, and expired items. Use this to determine what the user has access to.
+      tags:
+      - Entitlements
+      parameters:
+      - name: user_id
+        in: query
+        required: false
+        description: The user's external ID. Required unless `email` is provided.
+        schema:
+          type: string
+      - name: email
+        in: query
+        required: false
+        deprecated: true
+        description: The user's email address. Deprecated -- use `user_id` instead.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: User entitlements
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - entitlements
+                properties:
+                  entitlements:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Entitlement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /iap/claim-entitlement/:
+    post:
+      operationId: claimEntitlement
+      summary: Claim Entitlement
+      description: Transfers an existing StoreKit entitlement to the calling user. Used when an Apple ID's StoreKit subscription is owned by a different ZeroSettle account and needs to be moved to the current account (account migration, support flows, sandbox testing). The backend verifies the supplied JWS, revokes the entitlement from the previous owner, and grants it to `user_id` in a single atomic transaction.
+      tags:
+      - Entitlements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - jws_representation
+              - user_id
+              properties:
+                jws_representation:
+                  type: string
+                  description: The StoreKit 2 transaction's JWS representation string for the entitlement being claimed.
+                user_id:
+                  type: string
+                  description: The external user ID that should receive the entitlement.
+      responses:
+        '200':
+          description: Claim processed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - claimed
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  claimed:
+                    type: boolean
+                    description: True if the entitlement was transferred to the current user. False when the entitlement already belonged to the current user (no-op).
+                  product_id:
+                    type: string
+                    description: Reference ID of the claimed product. Present when `claimed` is true.
+                  original_transaction_id:
+                    type: string
+                    description: StoreKit `originalTransactionId` of the claimed entitlement. Present when `claimed` is true.
+        '400':
+          description: Bad request — missing required field, or the entitlement is a consumable and cannot be claimed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: JWS verification failed against Apple's root certificate chain, or API key invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No entitlement to claim — the JWS does not correspond to a known ZeroSettle entitlement.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    Entitlement:
+      type: object
+      description: A user's entitlement to a product.
+      properties:
+        id:
+          type: string
+          description: Stable transaction-derived identifier in the form `txn_<uuid>`. Older entitlements may still return the legacy `txn_<db_pk>` format.
+        product_id:
+          type: string
+          description: The product's reference ID.
+        product_type:
+          type: string
+          enum:
+          - consumable
+          - non_consumable
+          - non_renewing_subscription
+          - auto_renewable_subscription
+          description: The type of product.
+        source:
+          type: string
+          enum:
+          - web_checkout
+          - store_kit
+          - play_store
+          description: Where the entitlement originated.
+        status:
+          type: string
+          enum:
+          - active
+          - expired
+          - cancelled
+          - paused
+          - revoked
+          - billing_retry
+          - billing_grace_period
+          description: Current entitlement status.
+        is_active:
+          type: boolean
+          description: Whether the user currently has access to this product.
+        expires_at:
+          description: When the entitlement expires, or null for lifetime purchases.
+          type: string
+          format: date-time
+          nullable: true
+        purchased_at:
+          type: string
+          format: date-time
+          description: When the entitlement was originally purchased.
+        will_renew:
+          type: boolean
+          description: Whether the subscription will auto-renew at the end of the current period.
+        is_trial:
+          type: boolean
+          description: Whether the entitlement is currently in a free trial period.
+        trial_ends_at:
+          description: When the trial period ends, or null if not on trial.
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_at:
+          description: When the subscription was cancelled, or null if not cancelled.
+          type: string
+          format: date-time
+          nullable: true
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

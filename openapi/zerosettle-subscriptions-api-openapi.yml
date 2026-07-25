@@ -1,0 +1,249 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Subscriptions API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Subscriptions
+  description: Manage subscription lifecycle (cancel, pause, resume)
+paths:
+  /iap/subscriptions/cancel:
+    post:
+      operationId: cancelSubscription
+      summary: Cancel Subscription
+      description: 'Cancels a user''s active web checkout subscription. By default, access continues until the end of the current billing period (`immediate: false`). Set `immediate: true` to revoke access immediately.'
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                product_id:
+                  type: string
+                  description: Specific product to cancel. If omitted, cancels the user's active subscription.
+                immediate:
+                  type: boolean
+                  default: false
+                  description: If `true`, cancels immediately and revokes access. If `false`, cancels at end of billing period.
+      responses:
+        '200':
+          description: Subscription cancelled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /iap/subscriptions/pause:
+    post:
+      operationId: pauseSubscription
+      summary: Pause Subscription
+      description: Pauses a user's active web checkout subscription. The subscription will automatically resume after the pause duration expires.
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                product_id:
+                  type: string
+                  description: Specific product to pause. If omitted, pauses the user's active subscription.
+                pause_duration_days:
+                  type: integer
+                  description: Number of days to pause the subscription. If omitted, uses the default configured in the cancel flow.
+      responses:
+        '200':
+          description: Subscription paused
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PauseResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /iap/subscriptions/resume:
+    post:
+      operationId: resumeSubscription
+      summary: Resume Subscription
+      description: Resumes a previously paused web checkout subscription.
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                product_id:
+                  type: string
+                  description: Specific product to resume. If omitted, resumes the user's paused subscription.
+      responses:
+        '200':
+          description: Subscription resumed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /iap/customer-portal-sessions:
+    post:
+      operationId: createCustomerPortalSession
+      summary: Create Customer Portal Session
+      description: Creates a Stripe Customer Portal session URL. The portal lets users manage their subscriptions, update payment methods, and view billing history.
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                return_url:
+                  type: string
+                  description: URL to redirect the user to after they leave the portal.
+      responses:
+        '200':
+          description: Portal session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  portal_url:
+                    type: string
+                    description: URL to redirect the user to the Stripe Customer Portal.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    ResumeResponse:
+      type: object
+      description: Response from resuming a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        resumed_at:
+          type: string
+          format: date-time
+          description: When the subscription was resumed.
+    PauseResponse:
+      type: object
+      description: Response from pausing a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        paused_at:
+          type: string
+          format: date-time
+          description: When the subscription was paused.
+        resumes_at:
+          type: string
+          format: date-time
+          description: When the subscription will automatically resume.
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    CancelResponse:
+      type: object
+      description: Response from cancelling a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        cancelled_at:
+          type: string
+          format: date-time
+          description: When the cancellation was processed.
+        access_until:
+          type: string
+          format: date-time
+          description: When the user will lose access (end of billing period for non-immediate cancellations).
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

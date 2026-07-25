@@ -1,0 +1,375 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Products API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Products
+  description: Fetch the product catalog for your app
+paths:
+  /iap/products:
+    get:
+      operationId: getProducts
+      summary: Get Products
+      description: Fetches the product catalog for your app, including web and StoreKit prices, checkout configuration, trial eligibility, and any active migration campaign. Pass `user_id` to get per-user trial eligibility.
+      tags:
+      - Products
+      parameters:
+      - name: user_id
+        in: query
+        required: false
+        description: The user's external ID. When provided, the response includes per-user `is_trial_eligible` on each product.
+        schema:
+          type: string
+      - name: demo
+        in: query
+        required: false
+        description: '**Debug-only.** Surfaces a dashboard-configured campaign as if the requesting user were eligible for it, regardless of their real subscription state. Lets developers preview their tip UI without crafting a specific test account.
+
+
+          - `migration` returns the configured `MigrationCampaign` (Switch & Save) on `config.migration` (and `config.offer` mirror with `flow_type=migration`).
+
+          - `upgrade` returns the configured `UpgradeOfferConfig` (Upgrade & Save) on `config.offer` with `flow_type=upgrade`. Uses the first `upgrade_paths` entry as the preview source/target. `savings_percent` is `0` for demo previews — accurate proration requires a real billing cycle.
+
+          - Honored **only** on test-mode publishable keys (`zs_pk_test_*`). Live keys silently ignore the flag. Impressions are NOT counted on demo requests. Any other value (including the legacy `true`) drops the bypass and the normal user-state resolver runs.'
+        schema:
+          type: string
+          enum:
+          - migration
+          - upgrade
+      responses:
+        '200':
+          description: Product catalog with checkout configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - products
+                - checkout_config
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  checkout_config:
+                    $ref: '#/components/schemas/CheckoutConfig'
+                  migration_campaign:
+                    description: Active Switch & Save migration campaign, or null if none is configured.
+                    allOf:
+                    - $ref: '#/components/schemas/MigrationCampaign'
+                    nullable: true
+                  offer:
+                    description: Unified offer for the current user. Null if the user is not eligible for any offer. New SDKs prefer this over migration_campaign.
+                    nullable: true
+                    oneOf:
+                    - $ref: '#/components/schemas/Offer'
+                    - type: 'null'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+components:
+  schemas:
+    CheckoutConfig:
+      type: object
+      description: Configuration for how the SDK should present checkout.
+      properties:
+        sheet_type:
+          type: string
+          enum:
+          - webview
+          - native
+          description: 'Default checkout presentation: `native` for Apple Pay / Google Pay payment sheet, `webview` for embedded web checkout.'
+        is_enabled:
+          type: boolean
+          description: Whether web checkout is enabled for this app.
+        jurisdictions:
+          type: object
+          description: Per-jurisdiction checkout overrides.
+          properties:
+            us:
+              $ref: '#/components/schemas/JurisdictionConfig'
+            eu:
+              $ref: '#/components/schemas/JurisdictionConfig'
+            other:
+              $ref: '#/components/schemas/JurisdictionConfig'
+        apple_merchant_id:
+          description: Apple Merchant ID for Apple Pay, if configured.
+          type: string
+          nullable: true
+    Product:
+      type: object
+      description: A product in the catalog.
+      properties:
+        id:
+          type: string
+          description: The product's reference ID (e.g., `com.app.premium.monthly`).
+        display_name:
+          type: string
+          description: Human-readable product name.
+        product_description:
+          type: string
+          description: Product description text.
+        type:
+          type: string
+          enum:
+          - consumable
+          - non_consumable
+          - non_renewing_subscription
+          - auto_renewable_subscription
+          description: The product type.
+        web_price:
+          description: The web checkout price, or null if not available for web purchase.
+          allOf:
+          - $ref: '#/components/schemas/Price'
+          nullable: true
+        storekit_price:
+          description: The StoreKit price from App Store Connect, or null if not synced.
+          allOf:
+          - $ref: '#/components/schemas/Price'
+          nullable: true
+        subscription_group_id:
+          description: The subscription group this product belongs to, or null for non-subscription products.
+          type: integer
+          nullable: true
+        free_trial_duration:
+          description: ISO 8601 duration for the free trial period (e.g., `P7D` for 7 days), or null if no trial is configured.
+          type: string
+          nullable: true
+        is_trial_eligible:
+          description: Whether the current user is eligible for a free trial on this product. Null if `user_id` was not provided in the request.
+          type: boolean
+          nullable: true
+        trial:
+          description: Trial mode details for this product. Present only for `auto_renewable_subscription` products that have a free trial configured AND whose trial eligibility was resolved (i.e., `user_id` was included in the request and the user is trial-eligible). Absent for non-subscription products, products without a trial, and anonymous requests.
+          nullable: true
+          type: object
+          properties:
+            mode:
+              type: string
+              enum:
+              - free
+              - paid
+              - auth_hold
+              description: 'How the trial is collected. `free`: no charge during the trial period; the payment method is saved and billed at trial end. `paid`: a real upfront charge of `upfront_amount_cents` is collected immediately and kept; the full subscription price is billed at trial end. `auth_hold`: a temporary authorization hold of `hold_amount_cents` is placed (shown as a pending charge); released when the subscription converts or is cancelled.'
+            duration:
+              type: string
+              description: Duration token for the trial period (e.g., `1_week`, `3_days`, `1_month`). This is a ZeroSettle token, not an ISO 8601 duration. The app should map this to its own display copy.
+            upfront_amount_cents:
+              type: integer
+              description: 'For `paid` mode: the real charge collected at checkout, in cents. Zero for `free` and `auth_hold` modes.'
+            hold_amount_cents:
+              type: integer
+              description: 'For `auth_hold` mode: the authorization hold amount placed at checkout, in cents. Zero for `free` and `paid` modes.'
+            validates_card:
+              type: boolean
+              description: '`true` for `paid` and `auth_hold` modes (a real or pending charge verifies the card); `false` for `free` mode.'
+    MigrationCampaign:
+      type: object
+      description: An active Switch & Save migration campaign.
+      properties:
+        should_show:
+          type: boolean
+          description: Whether the migration offer should be displayed to the user.
+        product_id:
+          type: string
+          description: The product the migration offer applies to.
+        discount_percent:
+          type: integer
+          description: Discount percentage offered (e.g., 20 for 20% off).
+        min_subscription_days:
+          type: integer
+          description: Minimum number of days the user must have been subscribed to be eligible.
+        max_subscription_days:
+          type: integer
+          description: Maximum number of subscription days for eligibility.
+        free_trial_days:
+          type: integer
+          description: Number of free trial days offered in the migration.
+        title:
+          type: string
+          description: Title text for the migration offer UI.
+        message:
+          type: string
+          description: Body text for the migration offer UI.
+        variant_id:
+          description: Experiment variant ID if the campaign is part of an A/B test.
+          type: integer
+          nullable: true
+    Price:
+      type: object
+      description: A price in micros (1/1,000,000 of the currency unit).
+      properties:
+        amount_micros:
+          type: integer
+          description: Price in micros. For example, $4.99 = 4990000.
+        currency_code:
+          type: string
+          description: ISO 4217 currency code (e.g., `USD`).
+    OfferDisplay:
+      type: object
+      description: Server-configurable copy for every tip card state. Empty strings mean the SDK should use its hardcoded defaults.
+      required:
+      - offer_title
+      - offer_message
+      - offer_cta
+      - accepted_title
+      - accepted_message
+      - accepted_cta
+      - completed_title
+      - completed_message
+      properties:
+        offer_title:
+          type: string
+          description: Title for the offer card (e.g., 'Thanks for being with us!').
+        offer_message:
+          type: string
+          description: Main offer body text.
+        offer_cta:
+          type: string
+          description: CTA button text (e.g., 'Save 20% Forever').
+        accepted_title:
+          type: string
+          description: Post-checkout title (e.g., 'Thanks for switching!').
+        accepted_message:
+          type: string
+          description: Post-checkout message with Apple cancel instructions.
+        accepted_cta:
+          type: string
+          description: Post-checkout CTA (e.g., 'Cancel Apple Billing').
+        completed_title:
+          type: string
+          description: Success title (e.g., 'Congratulations!').
+        completed_message:
+          type: string
+          description: Success message (e.g., 'You are now saving 20% forever.').
+    JurisdictionConfig:
+      type: object
+      description: Checkout configuration for a specific jurisdiction.
+      properties:
+        sheet_type:
+          type: string
+          enum:
+          - webview
+          - native
+          description: Checkout presentation type for this jurisdiction.
+        is_enabled:
+          type: boolean
+          description: Whether web checkout is enabled in this jurisdiction.
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    Offer:
+      type: object
+      description: Unified offer payload for migration and upgrade flows.
+      required:
+      - flow_type
+      - product_id
+      - eligible_product_ids
+      - savings_percent
+      - display
+      - free_trial_days
+      - min_subscription_days
+      - max_subscription_days
+      - rollout_percent
+      properties:
+        flow_type:
+          type: string
+          enum:
+          - migration
+          - upgrade
+          description: The type of offer flow.
+        product_id:
+          type: string
+          description: Target product reference ID.
+        eligible_product_ids:
+          type: array
+          items:
+            type: string
+          description: Product IDs the user might currently have.
+        savings_percent:
+          type: integer
+          description: Annualized savings percentage (0 if not computable).
+        display:
+          $ref: '#/components/schemas/OfferDisplay'
+        free_trial_days:
+          type: integer
+          description: Free trial days (computed at checkout time from product config).
+        min_subscription_days:
+          type: integer
+          description: Minimum days subscribed before eligibility.
+        max_subscription_days:
+          type: integer
+          nullable: true
+          description: Maximum days subscribed for eligibility.
+        rollout_percent:
+          type: integer
+          description: Percentage of eligible users who see this offer (0-100).
+        upgrade_type:
+          type: string
+          enum:
+          - storekit_to_web
+          - web_to_web
+          nullable: true
+          description: Upgrade subtype. Only present when flow_type is upgrade.
+        from_product_id:
+          type: string
+          nullable: true
+          description: User's current product (upgrades only).
+        to_product_id:
+          type: string
+          nullable: true
+          description: Upgrade target product (upgrades only).
+        variant_id:
+          type: integer
+          nullable: true
+          description: Experiment variant ID (when A/B testing).
+        per_product_prompts:
+          type: object
+          nullable: true
+          description: Per-product display overrides keyed by product ID.
+        checkout_presentation:
+          type: string
+          enum:
+          - inline
+          - sheet
+          nullable: true
+          description: 'How the SDK presents checkout: inline within tip card or overlay sheet.'
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Account disabled or insufficient permissions.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

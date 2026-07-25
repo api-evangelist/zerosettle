@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Upgrade Offers API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Upgrade Offers
+  description: Subscription upgrade/downgrade offers
+paths:
+  /iap/upgrade-offer:
+    get:
+      operationId: getUpgradeOffer
+      summary: Get Upgrade Offer
+      description: Checks if a user is eligible for a subscription upgrade and returns available upgrade options.
+      tags:
+      - Upgrade Offers
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        description: The user's external ID.
+        schema:
+          type: string
+      - name: product_id
+        in: query
+        required: false
+        description: Specific product to check upgrade eligibility for.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Upgrade offer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpgradeOffer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /iap/upgrade-offer/execute:
+    post:
+      operationId: executeUpgradeOffer
+      summary: Execute Upgrade Offer
+      description: Executes a subscription upgrade, creating a new payment intent or checkout session for the target product. The old subscription is cancelled with proration when the new payment succeeds.
+      tags:
+      - Upgrade Offers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              - current_product_id
+              - target_product_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                current_product_id:
+                  type: string
+                  description: The reference ID of the user's current subscription product.
+                target_product_id:
+                  type: string
+                  description: The reference ID of the product to upgrade to.
+      responses:
+        '200':
+          description: Upgrade initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpgradeExecuteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /iap/upgrade-offer/respond:
+    post:
+      operationId: respondUpgradeOffer
+      summary: Respond to Upgrade Offer
+      description: Records the user's response to an upgrade offer for analytics purposes.
+      tags:
+      - Upgrade Offers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                accepted:
+                  type: boolean
+                  description: Whether the user accepted the upgrade offer.
+                variant_id:
+                  type: integer
+                  description: Experiment variant ID, if the upgrade offer is part of an A/B test.
+      responses:
+        '200':
+          description: Response recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    UpgradeOffer:
+      type: object
+      description: Upgrade offer eligibility and options.
+      properties:
+        eligible:
+          type: boolean
+          description: Whether the user is eligible for an upgrade.
+        current_product_id:
+          type: string
+          description: The user's current subscription product ID.
+        eligible_upgrades:
+          type: array
+          description: Products the user can upgrade to.
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: The upgrade target product's reference ID.
+              display_name:
+                type: string
+                description: Product display name.
+              price:
+                $ref: '#/components/schemas/Price'
+              savings_percent:
+                type: integer
+                description: Percentage savings compared to the current plan (annualized).
+        variant_id:
+          description: Experiment variant ID if the upgrade offer is part of an A/B test.
+          type: integer
+          nullable: true
+    UpgradeExecuteResponse:
+      type: object
+      description: Response from executing an upgrade.
+      properties:
+        type:
+          type: string
+          enum:
+          - web_to_web
+          - storekit_to_web
+          description: The type of upgrade being performed.
+        client_secret:
+          type: string
+          description: Stripe PaymentIntent client secret for confirming the upgrade payment.
+        checkout_url:
+          type: string
+          description: Fallback checkout URL.
+        transaction_id:
+          type: string
+          description: ZeroSettle transaction ID for the upgrade.
+    Price:
+      type: object
+      description: A price in micros (1/1,000,000 of the currency unit).
+      properties:
+        amount_micros:
+          type: integer
+          description: Price in micros. For example, $4.99 = 4990000.
+        currency_code:
+          type: string
+          description: ISO 4217 currency code (e.g., `USD`).
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+  responses:
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

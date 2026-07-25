@@ -1,0 +1,294 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Cancel Flow
+  description: Configurable cancel flow with retention offers
+paths:
+  /iap/cancel-flow:
+    get:
+      operationId: getCancelFlow
+      summary: Get Cancel Flow
+      description: Returns the configured cancel flow for the app, including survey questions, retention offers, and pause options. The SDK uses this to render a multi-step cancellation experience.
+      tags:
+      - Cancel Flow
+      parameters:
+      - name: user_id
+        in: query
+        required: false
+        description: The user's external ID. Used to personalize offers.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cancel flow configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelFlow'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /iap/cancel-flow/respond:
+    post:
+      operationId: submitCancelFlowResponse
+      summary: Submit Cancel Flow Response
+      description: Submits the user's responses from the cancel flow, including survey answers and the final outcome (cancelled, retained, dismissed, or paused). Used for cancel flow analytics.
+      tags:
+      - Cancel Flow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              - outcome
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                product_id:
+                  type: string
+                  description: The product being cancelled.
+                outcome:
+                  type: string
+                  enum:
+                  - cancelled
+                  - retained
+                  - dismissed
+                  - paused
+                  description: The final outcome of the cancel flow.
+                offer_shown:
+                  type: boolean
+                  description: Whether a retention offer was shown to the user.
+                offer_accepted:
+                  type: boolean
+                  description: Whether the user accepted the retention offer.
+                pause_shown:
+                  type: boolean
+                  description: Whether a pause option was shown.
+                pause_accepted:
+                  type: boolean
+                  description: Whether the user chose to pause.
+                pause_duration_days:
+                  type: integer
+                  description: Number of days the user chose to pause, if applicable.
+                last_step_seen:
+                  type: string
+                  description: The last step of the cancel flow the user saw.
+                variant_id:
+                  type: integer
+                  description: Experiment variant ID, if the cancel flow is part of an A/B test.
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question_id:
+                        type: string
+                      answer:
+                        type: string
+                  description: Array of survey question answers.
+      responses:
+        '200':
+          description: Response recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /iap/cancel-flow/accept-offer:
+    post:
+      operationId: acceptCancelFlowOffer
+      summary: Accept Cancel Flow Offer
+      description: Accepts the retention offer shown during the cancel flow, applying a discount to the user's subscription.
+      tags:
+      - Cancel Flow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              - product_id
+              properties:
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                product_id:
+                  type: string
+                  description: The product the offer applies to.
+      responses:
+        '200':
+          description: Offer accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  discount_applied:
+                    type: boolean
+                    description: Whether the discount was successfully applied.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    CancelFlowPause:
+      type: object
+      description: Pause option in the cancel flow.
+      properties:
+        enabled:
+          type: boolean
+          description: Whether the pause option is available.
+        duration_days:
+          type: integer
+          description: Default pause duration in days.
+        max_duration_days:
+          type: integer
+          description: Maximum allowed pause duration.
+        title:
+          type: string
+          description: Pause option title text.
+        message:
+          type: string
+          description: Pause option body text.
+    CancelFlow:
+      type: object
+      description: Cancel flow configuration.
+      properties:
+        enabled:
+          type: boolean
+          description: Whether the cancel flow is enabled for this app.
+        questions:
+          type: array
+          description: Survey questions to show during the cancel flow.
+          items:
+            $ref: '#/components/schemas/CancelFlowQuestion'
+        offer:
+          description: Retention offer to show, or null if none is configured.
+          allOf:
+          - $ref: '#/components/schemas/CancelFlowOffer'
+          nullable: true
+        pause:
+          description: Pause option configuration, or null if pause is not enabled.
+          allOf:
+          - $ref: '#/components/schemas/CancelFlowPause'
+          nullable: true
+        variant_id:
+          description: Experiment variant ID if the cancel flow is part of an A/B test.
+          type: integer
+          nullable: true
+    CancelFlowOffer:
+      type: object
+      description: A retention offer in the cancel flow.
+      properties:
+        type:
+          type: string
+          enum:
+          - discount
+          - extension
+          description: Type of retention offer.
+        discount_percent:
+          type: integer
+          description: Discount percentage (for discount-type offers).
+        duration_months:
+          type: integer
+          description: How many billing cycles the discount lasts.
+        title:
+          type: string
+          description: Offer title text.
+        message:
+          type: string
+          description: Offer body text.
+    CancelFlowQuestion:
+      type: object
+      description: A survey question in the cancel flow.
+      properties:
+        id:
+          type: string
+          description: Question identifier.
+        text:
+          type: string
+          description: Question text to display.
+        type:
+          type: string
+          enum:
+          - single_choice
+          - multiple_choice
+          - free_text
+          description: Question type.
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Option identifier.
+              text:
+                type: string
+                description: Option text.
+          description: Available answer options (for choice questions).
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

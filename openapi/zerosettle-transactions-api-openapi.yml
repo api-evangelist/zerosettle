@@ -1,0 +1,272 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Transactions API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Transactions
+  description: Query transaction status and history
+paths:
+  /iap/transactions/{transaction_id}:
+    get:
+      operationId: getTransaction
+      summary: Get Transaction
+      description: Retrieves the status and details of a specific transaction by its ID.
+      tags:
+      - Transactions
+      parameters:
+      - name: transaction_id
+        in: path
+        required: true
+        description: The transaction ID (UUID returned from checkout).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /iap/transactions/{transaction_id}/storekit-status:
+    patch:
+      operationId: updateStorekitStatus
+      summary: Update StoreKit Status
+      description: 'Reports a StoreKit subscription state change for a migration transaction. As of 2026-04-27, this is a *trigger to verify* endpoint: when the SDK reports `storekit_status=2` (anything other than active), the backend queries Apple''s App Store Server API itself and persists what Apple reports onto the transaction''s `storekit_apple_status` and `storekit_subscription_end` fields. Billing-relevant data is never sourced from the client.'
+      tags:
+      - Transactions
+      parameters:
+      - name: transaction_id
+        in: path
+        required: true
+        description: The transaction ID.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - storekit_status
+              properties:
+                storekit_status:
+                  type: integer
+                  enum:
+                  - 1
+                  - 2
+                  description: '`1` = active (finished successfully, no further action). `2` = anything-not-active (cancelled, expired, billing retry, grace period, revoked). When `2` is reported, the backend triggers a server-side Apple App Store Server API query to resolve the canonical state.'
+                storekit_original_transaction_id:
+                  type: string
+                  description: Apple `originalTransactionId` for the subscription. Used by the backend to query Apple's API for the canonical subscription state when `storekit_status=2`. Optional — the backend will fall back to the value stored at transaction creation time when omitted.
+                storekit_subscription_end:
+                  type: string
+                  format: date-time
+                  deprecated: true
+                  description: Deprecated as of 2026-04-27. Accepted for backwards compatibility but **ignored** — the backend now resolves the actual subscription expiry from Apple's App Store Server API. Existing SDKs may continue sending this field; new SDKs should omit it.
+      responses:
+        '200':
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The transaction ID.
+                  storekit_status:
+                    type: integer
+                    description: The updated StoreKit status.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /iap/transaction-history:
+    get:
+      operationId: getTransactionHistory
+      summary: Get Transaction History
+      description: Returns a paginated list of transactions for a given user, ordered by most recent first.
+      tags:
+      - Transactions
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        description: The user's external ID.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: 'Maximum number of transactions to return. Default: 50, Max: 100.'
+        schema:
+          type: integer
+          default: 50
+          maximum: 100
+      responses:
+        '200':
+          description: Transaction history
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - transactions
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionHistoryItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Transaction:
+      type: object
+      description: A purchase transaction.
+      properties:
+        id:
+          type: string
+          description: Transaction ID (UUID).
+        product_id:
+          type: string
+          description: The product's reference ID.
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - succeeded
+          - failed
+          - refunded
+          - disputed
+          description: Current transaction status.
+        source:
+          type: string
+          enum:
+          - web_checkout
+          - store_kit
+          description: Where the transaction originated.
+        purchased_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when the purchase was made.
+        storekit_status:
+          description: 'StoreKit finish status: `1` = active (finished), `2` = anything-not-active (cancelled, expired, billing retry, grace period, revoked). Null for web checkout transactions. This is a coarse SDK-reported flag; consult `storekit_apple_status` for Apple''s full state.'
+          type: integer
+          nullable: true
+        storekit_apple_status:
+          description: Apple's full subscription status code from the App Store Server API. `1` = Active, `2` = Expired, `3` = BillingRetry, `4` = GracePeriod, `5` = Revoked. Null when no Apple-verified state has been recorded (e.g., before the SDK has reported a state change, or when ASC credentials are not configured for the tenant).
+          type: integer
+          nullable: true
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        expires_at:
+          description: ISO 8601 expiry timestamp for subscription transactions. Null for one-time purchases.
+          type: string
+          format: date-time
+          nullable: true
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    TransactionHistoryItem:
+      type: object
+      description: A transaction in the user's history.
+      properties:
+        id:
+          type: string
+          description: Transaction ID.
+        product_id:
+          type: string
+          description: The product's reference ID.
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - succeeded
+          - failed
+          - refunded
+          - disputed
+          description: Transaction status.
+        source:
+          type: string
+          enum:
+          - web_checkout
+          - store_kit
+          description: Transaction source.
+        purchased_at:
+          type: string
+          format: date-time
+          description: Purchase timestamp.
+        amount_cents:
+          type: integer
+          description: Transaction amount in cents.
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+        product_name:
+          type: string
+          description: Display name of the product.
+        expires_at:
+          description: Subscription expiry timestamp, or null.
+          type: string
+          format: date-time
+          nullable: true
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

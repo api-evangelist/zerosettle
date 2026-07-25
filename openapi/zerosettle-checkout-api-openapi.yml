@@ -1,0 +1,396 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Checkout API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Checkout
+  description: Create checkout sessions and payment intents for web purchases
+paths:
+  /iap/payment-intents:
+    post:
+      operationId: createPaymentIntent
+      summary: Create Payment Intent
+      description: Creates a Stripe PaymentIntent for native checkout (Apple Pay / Google Pay payment sheet). Returns a `client_secret` for confirming the payment on the client side and a `checkout_url` for fallback browser checkout.
+      tags:
+      - Checkout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - product_id
+              properties:
+                product_id:
+                  type: string
+                  description: The product's `reference_id` (e.g., `com.app.premium`).
+                external_user_id:
+                  type: string
+                  description: The user's external ID. Either this or `user_id` is required.
+                user_id:
+                  type: string
+                  description: Alias for `external_user_id`. Either this or `external_user_id` is required.
+                platform:
+                  type: string
+                  enum:
+                  - ios
+                  - android
+                  - web
+                  description: The platform the purchase is being made from.
+                stripe_customer_id:
+                  type: string
+                  description: Existing Stripe customer ID to attach the payment to.
+                customer_name:
+                  type: string
+                  description: Optional customer display name to attach to the Stripe customer for this checkout. Also accepts the camelCase alias `customerName`.
+                customer_email:
+                  type: string
+                  description: Optional customer email to attach to the Stripe customer for this checkout. Also accepts the camelCase alias `customerEmail`.
+                checkout_domain:
+                  type: string
+                  description: Verified custom subdomain for the app's checkout (e.g., `checkout.example.com`). Configure via the dashboard — see the Custom Checkout Domains guide.
+                checkout_mode:
+                  type: string
+                  enum:
+                  - native
+                  - browser
+                  description: Preferred checkout mode. `native` uses the in-app payment sheet; `browser` opens a web checkout page.
+                storekit_subscription_end:
+                  type: string
+                  format: date-time
+                  description: ISO 8601 datetime of the current StoreKit subscription's expiry. Used for Switch & Save migrations to align the trial period.
+                storekit_original_transaction_id:
+                  type: string
+                  description: The StoreKit original transaction ID for the subscription being migrated.
+                external_purchase_token:
+                  type: string
+                  description: Apple externalPurchaseToken received from StoreKit at the disclosure-sheet confirmation step. When provided, ZeroSettle uses this token for automatic external-purchase reporting in eligible jurisdictions (EU/EEA under the DMA alternative terms, EEA music streaming, and Japan MSCA on iOS 26.4+). Optional — omit for non-Apple platforms or regions where reporting is not required.
+                ios_version:
+                  type: string
+                  description: iOS version of the checkout client (e.g., '26.4.1'). Used for JP MSCA regime gating, which requires iOS 26+. Optional.
+      responses:
+        '200':
+          description: Payment intent created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '502':
+          $ref: '#/components/responses/UpstreamError'
+  /iap/payment-intents/batch:
+    post:
+      operationId: createPaymentIntentBatch
+      summary: Create Payment Intent Batch
+      description: Creates Stripe PaymentIntents for multiple products in a single request. Reduces N sequential requests to 1, with shared Stripe customer/account resolution. Products that fail validation return an error entry instead of failing the entire batch. Maximum 25 products per request.
+      tags:
+      - Checkout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - products
+              properties:
+                products:
+                  type: array
+                  description: Array of products to create payment intents for. Maximum 25 items.
+                  maxItems: 25
+                  items:
+                    type: object
+                    required:
+                    - product_id
+                    properties:
+                      product_id:
+                        type: string
+                        description: The product's `reference_id` (e.g., `com.app.premium`).
+                      storekit_subscription_end:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 datetime of the current StoreKit subscription's expiry. Used for Switch & Save migrations.
+                      storekit_original_transaction_id:
+                        type: string
+                        description: The StoreKit original transaction ID for the subscription being migrated.
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                external_user_id:
+                  type: string
+                  description: Alias for `user_id`.
+                platform:
+                  type: string
+                  enum:
+                  - ios
+                  - android
+                  - web
+                  description: The platform the purchase is being made from.
+                checkout_mode:
+                  type: string
+                  enum:
+                  - native
+                  - browser
+                  description: Preferred checkout mode.
+                stripe_customer_id:
+                  type: string
+                  description: Existing Stripe customer ID to attach payments to.
+                customer_name:
+                  type: string
+                  description: Optional customer display name to attach to the Stripe customer for this batch. Also accepts the camelCase alias `customerName`.
+                customer_email:
+                  type: string
+                  description: Optional customer email to attach to the Stripe customer for this batch. Also accepts the camelCase alias `customerEmail`.
+      responses:
+        '200':
+          description: Batch results with per-product success or error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - results
+                properties:
+                  results:
+                    type: array
+                    description: Array of results, one per requested product. Each entry is either a successful PaymentIntent response or an error object.
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          description: The product's `reference_id`.
+                        client_secret:
+                          type: string
+                          description: Stripe PaymentIntent client secret. Present on success.
+                        transaction_id:
+                          type: string
+                          description: ZeroSettle transaction ID. Present on success.
+                        amount:
+                          type: integer
+                          description: Charge amount in cents. Present on success.
+                        currency:
+                          type: string
+                          description: ISO 4217 currency code. Present on success.
+                        product_name:
+                          type: string
+                          description: Display name of the product. Present on success.
+                        original_amount:
+                          type: integer
+                          description: Full price before discounts/trials. Present on success.
+                        checkout_url:
+                          type: string
+                          description: Fallback URL for browser-based checkout. Present on success.
+                        publishable_key:
+                          type: string
+                          description: Stripe publishable key for confirming the payment. Present on success.
+                        stripe_account:
+                          type: string
+                          nullable: true
+                          description: Connected Stripe account ID for BYOS. Null for managed mode.
+                        merchant_country:
+                          type: string
+                          nullable: true
+                          description: ISO 3166-1 alpha-2 country code for Apple Pay.
+                        is_subscription:
+                          type: boolean
+                          description: Whether this product is a subscription. Present on success.
+                        subscription_interval:
+                          type: string
+                          description: Subscription billing interval (e.g., `month`, `week`). Present for subscriptions.
+                        trial_type:
+                          type: string
+                          enum:
+                          - free_trial
+                          - migration
+                          nullable: true
+                          description: Type of trial applied. Omitted when no trial.
+                        trial_end:
+                          type: integer
+                          nullable: true
+                          description: Unix timestamp when trial ends. Only present with active trial.
+                        pending_amount:
+                          type: integer
+                          nullable: true
+                          description: Amount billed when trial ends. Only present with active trial.
+                        error:
+                          type: string
+                          description: Error message. Present when this product failed validation.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '502':
+          $ref: '#/components/responses/UpstreamError'
+  /iap/checkout-sessions:
+    post:
+      operationId: createCheckoutSession
+      summary: Create Checkout Session
+      description: Creates a Stripe Checkout Session for browser-based checkout. Returns a URL to redirect the user to Stripe's hosted checkout page.
+      tags:
+      - Checkout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - product_id
+              properties:
+                product_id:
+                  type: string
+                  description: The product's `reference_id` (e.g., `com.app.premium`).
+                external_user_id:
+                  type: string
+                  description: The user's external ID. Either this or `user_id` is required.
+                user_id:
+                  type: string
+                  description: Alias for `external_user_id`. Either this or `external_user_id` is required.
+                platform:
+                  type: string
+                  enum:
+                  - ios
+                  - android
+                  - web
+                  description: The platform the purchase is being made from.
+                stripe_customer_id:
+                  type: string
+                  description: Existing Stripe customer ID to attach the payment to.
+                rc_app_user_id:
+                  type: string
+                  description: RevenueCat app user ID, if using RevenueCat integration.
+      responses:
+        '200':
+          description: Checkout session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutSessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '502':
+          $ref: '#/components/responses/UpstreamError'
+components:
+  schemas:
+    CheckoutSessionResponse:
+      type: object
+      description: Response from creating a checkout session.
+      properties:
+        checkout_session_id:
+          type: string
+          description: Stripe Checkout Session ID.
+        url:
+          type: string
+          description: URL to redirect the user to for checkout.
+        client_secret:
+          type: string
+          description: Client secret for embedded checkout.
+        transaction_id:
+          type: string
+          description: ZeroSettle transaction ID.
+    PaymentIntentResponse:
+      type: object
+      description: Response from creating a payment intent.
+      properties:
+        client_secret:
+          type: string
+          description: Stripe PaymentIntent client secret. Use this to confirm the payment on the client side.
+        payment_intent_id:
+          type: string
+          description: Stripe PaymentIntent ID.
+        transaction_id:
+          type: string
+          description: ZeroSettle transaction ID. Use this to poll for transaction status.
+        amount_cents:
+          type: integer
+          description: The charge amount in cents.
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g., `usd`).
+        product_name:
+          type: string
+          description: Display name of the product being purchased.
+        checkout_url:
+          type: string
+          description: Fallback URL for browser-based checkout.
+        merchant_country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code of the merchant's Stripe account. Required for Apple Pay `paymentRequest()` country parameter.
+        original_amount_cents:
+          type: integer
+          description: The original price before any discounts or prorations.
+        trial_type:
+          type: string
+          enum:
+          - free_trial
+          - migration
+          nullable: true
+          description: The type of trial applied to this checkout. `free_trial` for standard free trials, `migration` for Switch & Save aligned trials. Omitted when no trial is active.
+        trial_end:
+          type: integer
+          nullable: true
+          description: Unix timestamp when the trial period ends. Only present when a trial is active.
+        pending_amount:
+          type: integer
+          nullable: true
+          description: The charge amount in cents that will be billed when the trial ends. Only present when a trial is active.
+        intent_type:
+          type: string
+          enum:
+          - setup
+          - payment
+          description: 'Discriminator for which Stripe confirm method the client must call. `setup`: confirms a SetupIntent (free trial — card saved, no immediate charge); `payment`: confirms a PaymentIntent (paid/auth_hold trial upfront charge, or any normal charge). Also returned by `POST /iap/payment-intents/{transaction_id}/finalize/` with the same semantics.'
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UpstreamError:
+      description: Upstream service error (Stripe, Apple).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

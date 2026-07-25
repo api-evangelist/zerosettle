@@ -1,0 +1,92 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Restore API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Restore
+  description: Restore purchases for a user
+paths:
+  /iap/restore-purchases:
+    post:
+      operationId: restorePurchases
+      summary: Restore Purchases
+      description: Restores purchases for a user by linking entitlements from a previous identity (matched by email) to the current user ID. Useful when a user reinstalls the app or signs in on a new device.
+      tags:
+      - Restore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - user_id
+              properties:
+                email:
+                  type: string
+                  description: The user's email address to match against previous purchases.
+                user_id:
+                  type: string
+                  description: The user's current external ID to restore purchases to.
+      responses:
+        '200':
+          description: Purchases restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  restored_count:
+                    type: integer
+                    description: Number of entitlements restored.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.

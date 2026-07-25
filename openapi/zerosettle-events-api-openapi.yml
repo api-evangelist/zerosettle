@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: ZeroSettle IAP Cancel Flow Events API
+  description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
+  version: 1.0.0
+  contact:
+    name: ZeroSettle Support
+    email: support@zerosettle.io
+    url: https://zerosettle.io
+servers:
+- url: https://api.zerosettle.io/v1
+  description: Production
+security:
+- ApiKeyAuth: []
+tags:
+- name: Events
+  description: Track SDK analytics events
+paths:
+  /iap/events:
+    post:
+      operationId: trackEvent
+      summary: Track Event
+      description: Tracks an analytics event from the SDK. Used for funnel analysis, screen views, and custom events.
+      tags:
+      - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - event_type
+              - user_id
+              properties:
+                event_type:
+                  type: string
+                  description: The event type identifier (e.g., `paywall_shown`, `purchase_started`, `checkout_completed`).
+                user_id:
+                  type: string
+                  description: The user's external ID.
+                product_id:
+                  type: string
+                  description: The product related to this event, if applicable.
+                screen_name:
+                  type: string
+                  description: The screen or view where the event occurred.
+                metadata:
+                  type: object
+                  additionalProperties: true
+                  description: Additional key-value metadata for the event.
+      responses:
+        '201':
+          description: Event recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-ZeroSettle-Key
+      description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for production.
