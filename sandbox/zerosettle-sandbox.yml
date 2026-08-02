@@ -1,0 +1,46 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.zerosettle.io/iap/testing
+description: >-
+  ZeroSettle separates sandbox and live purely by API key prefix. Sandbox
+  connects to Stripe's test environment (no real charges); SDK behavior is
+  identical between the two. The dashboard has a Sandbox/Live toggle.
+modes:
+- name: sandbox
+  key_prefix: zs_pk_test_
+  processor_environment: Stripe test environment
+  charges: none
+- name: live
+  key_prefix: zs_pk_live_
+  processor_environment: Stripe live environment
+  charges: real
+test_cards:
+  note: Stripe test cards. Use any future expiry and any 3-digit CVC.
+  reference: https://docs.stripe.com/testing
+  cards:
+  - number: '4242 4242 4242 4242'
+    outcome: Successful payment
+  - number: '4000 0000 0000 0002'
+    outcome: Card declined
+  - number: '4000 0000 0000 3220'
+    outcome: 3D Secure authentication required
+  - number: '4000 0000 0000 9995'
+    outcome: Insufficient funds
+time_simulation:
+  supported: true
+  mechanism: Stripe test clocks
+  reference: https://docs.stripe.com/billing/testing/test-clocks
+  note: Sandbox subscriptions use real time intervals; test clocks fast-forward time.
+reset_tooling:
+  location: Dashboard > Settings > Sandbox
+  actions:
+  - name: Reset to Live
+    effect: Copies live products and subscription configs into sandbox.
+    endpoint: POST /api/v1/sandbox/reset-to-live/
+  - name: Reset to ASC
+    effect: Re-syncs sandbox product metadata from App Store Connect.
+    endpoint: POST /api/v1/sandbox/reset-to-asc/
+  - name: Clear All
+    effect: Wipes sandbox transactions, entitlements, and sessions (products preserved). Irreversible.
+notes:
+- StoreKit environment is derived from Apple's receipt (environment field), not the key prefix; a sandbox Apple account with a live key records the transaction in sandbox mode and returns warning "environment_mismatch".

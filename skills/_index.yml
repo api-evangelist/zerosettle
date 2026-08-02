@@ -1,0 +1,20 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/zerosettle-openapi.json
+description: >-
+  Agent Skills for the ZeroSettle IAP API, each grounded in real operationIds
+  from openapi/zerosettle-openapi.json. No provider-published skills / AGENTS.md
+  were found (docs.zerosettle.io/AGENTS.md returns 404).
+skills:
+- name: verify-entitlement
+  file: verify-entitlement.md
+  operations: [getEntitlements, getTransaction]
+  summary: Server-side purchase/subscription verification before granting access.
+- name: create-web-checkout
+  file: create-web-checkout.md
+  operations: [getProducts, createPaymentIntent, createCheckoutSession, getTransaction]
+  summary: Fetch catalog and open a web checkout (payment intent or hosted session).
+- name: manage-subscription-retention
+  file: manage-subscription-retention.md
+  operations: [getCancelFlow, submitCancelFlowResponse, acceptCancelFlowOffer, cancelSubscription, pauseSubscription, resumeSubscription]
+  summary: Run the cancel flow (retention offer) and cancel/pause/resume a subscription.

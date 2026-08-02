@@ -1,0 +1,52 @@
+generated: '2026-07-21'
+method: searched
+source:
+- openapi/zerosettle-openapi.json
+- https://docs.zerosettle.io/iap/webhooks
+- https://docs.zerosettle.io/iap/checkout-errors
+description: >-
+  Cross-cutting runtime semantics for the ZeroSettle IAP API — a single
+  REST/JSON API (OpenAPI 3.0.3) at https://api.zerosettle.io/v1 that powers the
+  iOS/Android/Flutter/React Native SDKs.
+authentication:
+  style: apiKey
+  header: X-ZeroSettle-Key
+  key_kinds:
+    sandbox: zs_pk_test_*
+    live: zs_pk_live_*
+  note: Publishable key; the key prefix selects the sandbox vs live environment.
+  ref: authentication/zerosettle-authentication.yml
+idempotency:
+  consumer_facing: false
+  note: >-
+    No consumer Idempotency-Key request header is documented. As Merchant of
+    Record, ZeroSettle handles Stripe/Apple webhook idempotency internally (every
+    webhook event is logged with an idempotency key); StoreKit syncs are
+    idempotent per StoreKit transaction ID server-side.
+pagination:
+  style: limit-only
+  params:
+    limit: 'Max results (GET /iap/transaction-history: default 50, max 100).'
+  cursor: none
+  note: No cursor/offset pagination is exposed; list endpoints are user-scoped and bounded.
+identifiers:
+  user_id: External user ID supplied by the app (query param on user-scoped reads).
+  email: Alternate lookup for anonymous purchasers.
+  transaction_id: Path identifier for a specific transaction.
+  original_transaction_id: StoreKit original transaction lookups.
+error_envelope:
+  shape: '{ "error": string (required), "code": string (optional, machine-readable) }'
+  format: custom-json
+  problem_json: false
+  ref: errors/zerosettle-problem-types.yml
+versioning:
+  api: url-path (/v1)
+  ref: lifecycle/zerosettle-lifecycle.yml
+rate_limiting:
+  signaling: not-documented
+webhooks:
+  consumer_subscription: false
+  note: >-
+    ZeroSettle is Merchant of Record — apps do not configure webhook endpoints.
+    Purchase state is verified by polling GET /v1/iap/entitlements server-side or
+    via SDK delegate callbacks client-side.

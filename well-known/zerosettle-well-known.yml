@@ -1,0 +1,32 @@
+generated: '2026-07-21'
+method: probed
+source: live HTTP probes of ZeroSettle hosts
+description: >-
+  Probe of standard /.well-known/ discovery endpoints across ZeroSettle hosts.
+  None are published — recorded as honest 404s (no OpenID/OAuth discovery, no
+  security.txt, no ai-plugin). The API uses static publishable-key auth.
+probes:
+- host: zerosettle.io
+  path: /.well-known/security.txt
+  status: 404
+  file: null
+- host: zerosettle.io
+  path: /security.txt
+  status: 404
+  file: null
+- host: zerosettle.io
+  path: /.well-known/ai-plugin.json
+  status: 404
+  file: null
+- host: api.zerosettle.io
+  path: /.well-known/security.txt
+  status: 404
+  file: null
+- host: api.zerosettle.io
+  path: /.well-known/openid-configuration
+  status: 404
+  file: null
+- host: api.zerosettle.io
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  file: null

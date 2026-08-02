@@ -1,0 +1,81 @@
+generated: '2026-07-21'
+method: derived
+source:
+- openapi/zerosettle-openapi.json
+- https://docs.zerosettle.io/iap/checkout-errors
+description: >-
+  Error catalog for the ZeroSettle IAP API and SDKs. HTTP errors return a custom
+  JSON envelope { "error": string, "code": string? } (NOT RFC 9457
+  problem+json). The SDK layer maps these onto a unified ZeroSettleError type.
+format: custom-json
+envelope:
+  fields:
+    error: Human-readable error message (required).
+    code: Machine-readable error code (optional; not always present).
+http_errors:
+- status: 400
+  name: BadRequest
+  title: Invalid request — missing or malformed parameters.
+- status: 401
+  name: Unauthorized
+  title: Invalid or missing API key.
+  remediation: Send a valid X-ZeroSettle-Key (zs_pk_test_* or zs_pk_live_*).
+- status: 403
+  name: Forbidden
+  title: Account disabled or insufficient permissions.
+- status: 404
+  name: NotFound
+  title: Resource not found.
+- status: 502
+  name: UpstreamError
+  title: Upstream service error (Stripe, Apple).
+  remediation: Transient upstream failure — retry with backoff.
+sdk_errors:
+  note: >-
+    SDK-surface errors (unified ZeroSettleError). Cancellations are not errors —
+    filter with ZeroSettleError.isCancellation(_:) before showing error UI.
+  ios:
+  - code: notConfigured
+    cause: configure() was not called.
+    action: Call configure() before any SDK use.
+  - code: invalidPublishableKey
+    cause: Key format invalid.
+    action: Check key from dashboard.
+  - code: productNotFound
+    cause: Product ID not in catalog.
+    action: Verify product ID matches dashboard.
+  - code: checkoutFailed
+    cause: Payment processing failed.
+    action: Show error to user; inspect reason for detail.
+  - code: transactionVerificationFailed
+    cause: Server verification failed after payment.
+    action: Log and contact support; do not unlock content.
+  - code: apiError
+    cause: Network or server error creating the PaymentIntent.
+    action: Show retry prompt; read serverMessage / statusCode.
+  - code: webCheckoutDisabledForJurisdiction
+    cause: Dashboard config disables web checkout in this region.
+    action: Gracefully fall back or hide the button.
+  - code: userNotIdentified
+    cause: A user-scoped method was called before identify().
+    action: Call identify(.user(id:)) or .anonymous at launch before checkout.
+  - code: checkoutNotStarted
+    cause: The PaymentIntent was never created — the customer was NOT charged.
+    action: Terminal error; check backend logs.
+  - code: purchasePending
+    cause: Ask to Buy pending parental approval.
+    action: Show "Purchase pending approval" UI.
+  android:
+  - code: BackendError
+    cause: Server returned a non-2xx response (statusCode, body).
+  - code: NetworkError
+    cause: Network failure — inspect cause.
+  - code: MerchantNotOnboarded
+    cause: Merchant has not completed Stripe onboarding.
+  - code: JurisdictionBlocked
+    cause: Web checkout unavailable in this jurisdiction (country).
+  - code: OfferIneligible
+    cause: User is not currently eligible for any offer.
+  - code: NoActiveSubscription
+    cause: No active subscription for the product.
+docs: https://docs.zerosettle.io/iap/checkout-errors

@@ -1,0 +1,53 @@
+generated: '2026-07-21'
+method: searched
+source:
+- https://docs.zerosettle.io/changelog
+- https://docs.zerosettle.io/iap/migration-guide
+- https://docs.zerosettle.io/iap/sdk-versions
+description: >-
+  Versioning and deprecation posture for the ZeroSettle IAP API and its SDKs.
+  The API versions via URL path (/v1) and evolves additively; deprecated SDK
+  symbols remain as forwarding aliases/wrappers until a documented major.
+versioning:
+  api:
+    scheme: url-path
+    current: v1
+    base_url: https://api.zerosettle.io/v1
+    change_policy: >-
+      Additive and non-breaking. New response fields are ignored by SDKs that do
+      not read them; endpoints are superseded (e.g. GET /iap/user-offer) rather
+      than removed, with old paths kept working.
+  sdk:
+    scheme: semver
+    current: 1.5.2
+    minimum_documented: https://docs.zerosettle.io/iap/sdk-versions
+deprecation:
+  policy_documented: true
+  policy_url: https://docs.zerosettle.io/iap/migration-guide
+  mechanism: >-
+    Deprecated SDK type/method/view-modifier names still compile — they are type
+    aliases or thin wrappers forwarding to the current implementation. Named
+    removals are tied to the next major (e.g. .userIdRequired retained for source
+    compatibility, "will be removed in 2.0").
+  http_headers:
+    sunset: not-documented
+    deprecation: not-documented
+  examples:
+  - from: ZSTransaction
+    to: CheckoutTransaction
+  - from: ZSError
+    to: ZeroSettleError
+  - from: ZSPaymentSheet
+    to: CheckoutSheet
+  - from: getOrCreateMigrationManager(userId:)
+    to: offerManager(stripeCustomerId:)
+  api_field_deprecations:
+  - field: storekit_subscription_end (PATCH /iap/transactions/{id}/storekit-status body)
+    status: accepted-but-ignored
+    since: '2026-04-27'
+status_page:
+  found: false
+  note: No public status page discovered (status.zerosettle.io does not resolve).
+sla:
+  found: false
+  note: No published API uptime SLA discovered in developer docs.

@@ -1,0 +1,23 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/zerosettle-openapi.json
+docs: https://docs.zerosettle.io/iap/account-setup
+notes: >-
+  Single publishable API key sent in the X-ZeroSettle-Key header. The key prefix
+  selects the environment — zs_pk_test_* for sandbox (Stripe test), zs_pk_live_*
+  for live. No OAuth2/OIDC on the API surface (Stripe Connect OAuth is a
+  dashboard/BYOS onboarding concern, not an API auth scheme).
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-ZeroSettle-Key
+  description: Your publishable API key. Use `zs_pk_test_*` for sandbox or `zs_pk_live_*` for
+    production.
+  sources:
+  - openapi/zerosettle-openapi.json

@@ -1,0 +1,51 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.zerosettle.io/changelog
+description: >-
+  Release history for ZeroSettleKit (the iOS Swift SDK, the primary platform)
+  and the shared IAP API. Android and Flutter SDKs follow closely and share the
+  same API endpoints. Entries are labeled SDK, API, or by version number.
+scheme: semver
+current_sdk_version: 1.5.2
+minimum_requirements: iOS 17.0+, Swift 5.9+, Xcode 15.0+
+api_versioning: URL path (/v1)
+api_change_policy: >-
+  API changes are additive and non-breaking; unknown keys are ignored by older
+  SDKs. Deprecated SDK type/method names remain as aliases/wrappers.
+entries:
+- label: SDK
+  version: 1.5.2
+  date: '2026-06-10'
+  breaking: false
+  highlights:
+  - Automatic Apple external-purchase token minting at checkout initiation (region-gated EU/EEA DMA, EEA music streaming, Japan MSCA on iOS 26.4+); degrades gracefully to token-less.
+  - True storefront reporting — checkout sends the device App Store storefront for jurisdiction detection.
+  - Also shipped as Flutter zerosettle 1.7.0 (native floors ZeroSettleKit 1.5.2 + zerosettle-android 1.2.1).
+- label: API
+  date: '2026-06-08'
+  breaking: false
+  highlights:
+  - Trial mode facts — GET /iap/products adds a `trial` object (mode free/paid/auth_hold) on eligible subscription products.
+  - checkout-config and finalize add `intent_type` (setup|payment) and `charge_amount` discriminators. Additive, non-breaking.
+- label: API
+  date: '2026-06-04'
+  breaking: false
+  highlights:
+  - Idle checkout sessions auto-recover instead of failing with checkout_config_expired; buyer always charged the displayed price. No schema changes.
+- label: API
+  date: '2026-04-27'
+  breaking: false
+  highlights:
+  - Migration trial-end resolution moved server-side (Apple App Store Server API); PATCH storekit-status body `storekit_subscription_end` now accepted but ignored.
+  - New `storekit_apple_status` field (Apple 5-state code) on transaction responses.
+- label: API
+  date: '2026-04-20'
+  breaking: false
+  highlights:
+  - New unified GET /iap/user-offer endpoint (SDK 1.2+) with `action_type` discriminator, replacing three overlapping paths (old paths remain supported).
+  - StoreKit sync adds optional `will_auto_renew` / `renewal_state` fields for auto-renew state sync.
+- label: '1.1.5'
+  date: '2026-04-15'
+  breaking: false
+  highlights:
+  - Entitlement ownership model (StoreKit entitlements belong permanently to purchasing account); new claimEntitlement API; checkout hardening. Zero public API changes.

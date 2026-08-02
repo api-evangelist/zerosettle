@@ -1,0 +1,67 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zerosettle-openapi.json
+description: >-
+  Entity-relationship graph for the ZeroSettle IAP API, derived from OpenAPI
+  component schemas and id-reference fields. A Product (with web/StoreKit Prices)
+  is purchased through a Checkout Session / Payment Intent, producing a
+  Transaction (payment ledger) and an Entitlement (access grant).
+entities:
+- name: Product
+  id: id (string)
+  fields: [display_name, type, subscription_group_id, is_trial_eligible, trial]
+  notes: Carries web_price[] and storekit_price[] arrays of Price.
+- name: Price
+  fields: [amount_micros, currency_code]
+  embedded_in: Product
+- name: Transaction
+  id: id (string)
+  fields: [product_id, status, source, purchased_at, storekit_status, storekit_apple_status, expires_at]
+  notes: Immutable payment ledger entry.
+- name: Entitlement
+  id: id (string)
+  fields: [product_id, product_type, source, status, is_active, will_renew, is_trial, expires_at, cancelled_at]
+  notes: User access grant; may reference the same id as its Transaction.
+- name: CheckoutSession
+  id: checkout_session_id (string)
+  fields: [url, client_secret, transaction_id]
+- name: PaymentIntent
+  id: payment_intent_id (string)
+  fields: [client_secret, transaction_id, amount_cents, currency, intent_type, trial_type]
+- name: UpgradeOffer
+  fields: [eligible, current_product_id, eligible_upgrades, variant_id]
+- name: UserOffer
+  fields: [user_id, app_id, is_sandbox, subscription, offer, server_time]
+relationships:
+- from: Product
+  to: Price
+  type: has_many
+  via: web_price / storekit_price
+- from: CheckoutSession
+  to: Transaction
+  type: has_one
+  via: transaction_id
+- from: PaymentIntent
+  to: Transaction
+  type: has_one
+  via: transaction_id
+- from: Transaction
+  to: Product
+  type: belongs_to
+  via: product_id
+- from: Entitlement
+  to: Product
+  type: belongs_to
+  via: product_id
+- from: Entitlement
+  to: Transaction
+  type: has_one
+  via: id (shared identifier, e.g. txn_*)
+- from: UpgradeOffer
+  to: Product
+  type: belongs_to
+  via: current_product_id
+id_prefixes:
+  observed:
+  - txn_ (Transaction / Entitlement id, per webhooks docs example)
+  note: Product ids are developer-defined catalog identifiers (e.g. premium_monthly).

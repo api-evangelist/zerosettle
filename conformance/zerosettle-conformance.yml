@@ -1,0 +1,49 @@
+generated: '2026-07-21'
+method: derived
+source:
+- openapi/zerosettle-openapi.json
+- https://docs.zerosettle.io/iap/webhooks
+description: >-
+  Cross-cutting standards conformance for the ZeroSettle IAP API, derived from
+  the OpenAPI description and documentation. Absence of a standard is recorded as
+  conforms:false, not a gap to fabricate.
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: Published OpenAPI 3.0.3 description at docs.zerosettle.io/api-reference/openapi.json (25 operations).
+- id: rest-json
+  conforms: true
+  evidence: Resource-oriented JSON over HTTPS with tag-grouped resources.
+- id: apikey-auth
+  conforms: true
+  evidence: X-ZeroSettle-Key header (publishable key), applied globally.
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securityScheme; API is publishable-key only. (Stripe Connect OAuth is a dashboard/BYOS setup concern, not an API auth scheme.)
+- id: oidc
+  conforms: false
+  evidence: No OpenID Connect discovery; /.well-known/openid-configuration returns 404.
+- id: rfc9457
+  conforms: false
+  evidence: Errors use a custom { error, code } JSON envelope, not application/problem+json.
+- id: pagination
+  conforms: partial
+  evidence: Limit-based bounding on list endpoints (transaction-history limit default 50/max 100); no cursor/offset pagination.
+- id: idempotency
+  conforms: partial
+  evidence: No consumer Idempotency-Key header; idempotency handled server-side (webhook idempotency keys, per-StoreKit-transaction dedupe) as Merchant of Record.
+- id: pci-dss
+  conforms: partial
+  evidence: >-
+    Card data is processed by Stripe (ZeroSettle acts as Merchant of Record / uses
+    Stripe Connect); card details do not transit the ZeroSettle IAP API. No
+    ZeroSettle-published PCI certificate was found.
+- id: json-api
+  conforms: false
+  evidence: Not a JSON:API media type; plain JSON resources.
+- id: fhir
+  conforms: false
+  evidence: Not a healthcare API.
+- id: scim
+  conforms: false
+  evidence: No SCIM user-provisioning surface.

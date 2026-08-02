@@ -1,0 +1,84 @@
+# ZeroSettle Docs
+
+## Docs
+
+- [Accept Cancel Flow Offer](https://docs.zerosettle.io/api-reference/endpoint/accept-cancel-flow-offer.md)
+- [Cancel Subscription](https://docs.zerosettle.io/api-reference/endpoint/cancel-subscription.md)
+- [Claim Entitlement](https://docs.zerosettle.io/api-reference/endpoint/claim-entitlement.md)
+- [Create Checkout Session](https://docs.zerosettle.io/api-reference/endpoint/create-checkout-session.md)
+- [Create Customer Portal Session](https://docs.zerosettle.io/api-reference/endpoint/create-customer-portal-session.md)
+- [Create Payment Intent](https://docs.zerosettle.io/api-reference/endpoint/create-payment-intent.md)
+- [Create Payment Intent Batch](https://docs.zerosettle.io/api-reference/endpoint/create-payment-intent-batch.md)
+- [Execute Upgrade Offer](https://docs.zerosettle.io/api-reference/endpoint/execute-upgrade-offer.md)
+- [Get Cancel Flow](https://docs.zerosettle.io/api-reference/endpoint/get-cancel-flow.md)
+- [Get Entitlements](https://docs.zerosettle.io/api-reference/endpoint/get-entitlements.md)
+- [Get Products](https://docs.zerosettle.io/api-reference/endpoint/get-products.md)
+- [Get StoreKit Subscription Status](https://docs.zerosettle.io/api-reference/endpoint/get-storekit-subscription-status.md)
+- [Get Transaction](https://docs.zerosettle.io/api-reference/endpoint/get-transaction.md)
+- [Get Transaction History](https://docs.zerosettle.io/api-reference/endpoint/get-transaction-history.md)
+- [Get Upgrade Offer](https://docs.zerosettle.io/api-reference/endpoint/get-upgrade-offer.md)
+- [Report Migration Conversion](https://docs.zerosettle.io/api-reference/endpoint/migration-converted.md)
+- [Pause Subscription](https://docs.zerosettle.io/api-reference/endpoint/pause-subscription.md)
+- [Respond to Upgrade Offer](https://docs.zerosettle.io/api-reference/endpoint/respond-upgrade-offer.md)
+- [Restore Purchases](https://docs.zerosettle.io/api-reference/endpoint/restore-purchases.md)
+- [Resume Subscription](https://docs.zerosettle.io/api-reference/endpoint/resume-subscription.md)
+- [Submit Cancel Flow Response](https://docs.zerosettle.io/api-reference/endpoint/submit-cancel-flow-response.md)
+- [Sync StoreKit Transaction](https://docs.zerosettle.io/api-reference/endpoint/sync-storekit-transaction.md)
+- [Track Event](https://docs.zerosettle.io/api-reference/endpoint/track-event.md)
+- [Update StoreKit Status](https://docs.zerosettle.io/api-reference/endpoint/update-storekit-status.md)
+- [Get User Offer](https://docs.zerosettle.io/api-reference/endpoint/user-offer.md)
+- [API Reference](https://docs.zerosettle.io/api-reference/introduction.md): ZeroSettle IAP SDK API endpoints
+- [Changelog](https://docs.zerosettle.io/changelog.md): Release history and breaking changes for ZeroSettleKit
+- [Account Setup](https://docs.zerosettle.io/iap/account-setup.md): Create your account, connect Stripe, and configure your first product
+- [Best Practices](https://docs.zerosettle.io/iap/best-practices.md): Recommendations for a reliable in-app purchase implementation
+- [Campaigns & Offers](https://docs.zerosettle.io/iap/campaigns.md): Migration campaigns, upgrade offers, and promotional pricing
+- [Cancel Flow](https://docs.zerosettle.io/iap/cancel-flow.md): Configure cancellation questionnaires and retention offers from the dashboard
+- [Checkout Branding](https://docs.zerosettle.io/iap/checkout-branding.md): Customize your checkout with your logo, icon, and brand colors
+- [Checkout Errors](https://docs.zerosettle.io/iap/checkout-errors.md): Error types returned by ZeroSettle checkout and how to handle them
+- [SDK Compliance](https://docs.zerosettle.io/iap/compliance.md): How the ZeroSettle SDK implements checkout presentation, geofencing, and platform compliance
+- [Cancel Flow API](https://docs.zerosettle.io/iap/custom-cancel-flow.md): Build your own cancellation UI with headless cancel flow primitives
+- [Custom Checkout Domains](https://docs.zerosettle.io/iap/custom-domains.md): Serve ZeroSettle web checkout from your own subdomain
+- [Cancel Flow UI](https://docs.zerosettle.io/iap/customer-portal.md): How customers can manage their own subscriptions
+- [Dashboard](https://docs.zerosettle.io/iap/dashboard.md): Configure products, checkout, and campaigns from the ZeroSettle dashboard
+- [Entitlement Ownership](https://docs.zerosettle.io/iap/entitlement-ownership.md): How ZeroSettle determines which account owns a StoreKit purchase
+- [External Purchase Reporting](https://docs.zerosettle.io/iap/external-purchase-reporting.md): Set up automatic Apple and Google external-purchase compliance reporting
+- [Go-Live Checklist](https://docs.zerosettle.io/iap/go-live.md): Everything to verify before processing real payments
+- [Installation](https://docs.zerosettle.io/iap/installation.md): Add the ZeroSettle SDK to your project
+- [API Migration Guide](https://docs.zerosettle.io/iap/migration-guide.md): Deprecated API names and their current replacements
+- [Custom Switch and Save UI](https://docs.zerosettle.io/iap/migration-manager.md): Build your own switch and save experience with ZSMigrationManager
+- [Custom Offer UI](https://docs.zerosettle.io/iap/offer-manager.md): Build your own offer experience with ZSOfferManager
+- [Offer Tip View](https://docs.zerosettle.io/iap/offer-tip-view.md): Unified drop-in view for migration and upgrade offers
+- [Overview](https://docs.zerosettle.io/iap/overview.md): Web checkout and subscription lifecycle SDK for mobile apps
+- [Checkout Sheet](https://docs.zerosettle.io/iap/payment-sheet.md): Embedded checkout UI with Apple Pay and card support
+- [Payouts](https://docs.zerosettle.io/iap/payouts.md): How you get paid — Stripe Connect payouts for Managed and BYOS modes
+- [Play Billing Integration](https://docs.zerosettle.io/iap/play-billing-integration.md): Use Google Play Billing alongside ZeroSettle web checkout
+- [Preloading & Prefetching](https://docs.zerosettle.io/iap/preloading.md): Pre-create PaymentIntents and pre-render WebViews for instant checkout
+- [Promotions & Free Trials](https://docs.zerosettle.io/iap/promotions.md): Display promotional pricing and free trial eligibility in your paywall
+- [Quickstart (iOS)](https://docs.zerosettle.io/iap/quickstart.md): Get started with ZeroSettle In-App Purchase on iOS
+- [Quickstart (Android)](https://docs.zerosettle.io/iap/quickstart-android.md): Get started with ZeroSettle In-App Purchase for Android
+- [Quickstart (Flutter)](https://docs.zerosettle.io/iap/quickstart-flutter.md): Get started with ZeroSettle In-App Purchase for Flutter
+- [Refunding Payments](https://docs.zerosettle.io/iap/refunding-payments.md): How to refund a customer payment in the dashboard
+- [RevenueCat Integration](https://docs.zerosettle.io/iap/revenuecat-integration.md): Use ZeroSettle alongside RevenueCat for web checkout
+- [Sample App: JustOne](https://docs.zerosettle.io/iap/sample-app.md): A production habit tracker showing real-world ZeroSettle integration
+- [SDK minimum versions](https://docs.zerosettle.io/iap/sdk-versions.md): Minimum ZeroSettle SDK versions for offer view tracking and other features.
+- [StoreKit Integration](https://docs.zerosettle.io/iap/storekit-integration.md): Use StoreKit alongside ZeroSettle web checkout
+- [Stripe Catalog](https://docs.zerosettle.io/iap/stripe-catalog.md): Link your Stripe products to their StoreKit counterparts
+- [Stripe Integration](https://docs.zerosettle.io/iap/stripe-integration.md): How ZeroSettle uses Stripe Connect, identifying ZeroSettle activity, and keeping data in sync
+- [Getting Subscription Status](https://docs.zerosettle.io/iap/subscription-state.md): Determining the subscription status for a user
+- [Switch & Save View](https://docs.zerosettle.io/iap/switch-and-save.md): A drop-in view that switches Apple subscribers to direct billing
+- [Testing & Sandbox](https://docs.zerosettle.io/iap/testing.md): Test purchases, subscriptions, and entitlements before going live
+- [Troubleshooting](https://docs.zerosettle.io/iap/troubleshooting.md): Solutions for common issues during ZeroSettle integration
+- [Universal Links & Deep Links](https://docs.zerosettle.io/iap/universal-links.md): Configure your app to receive checkout callbacks
+- [Upgrade Offers](https://docs.zerosettle.io/iap/upgrade-offer.md): Prompt subscribers to upgrade and save with web checkout
+- [User Identity](https://docs.zerosettle.io/iap/user-identity.md): How ZeroSettle identifies users across purchases and devices
+- [Webhooks & Server-Side](https://docs.zerosettle.io/iap/webhooks.md): How ZeroSettle processes purchase events and how to verify purchases on your backend
+- [Welcome to ZeroSettle](https://docs.zerosettle.io/index.md): Subscription revenue platform for mobile apps
+- [Android (Kotlin)](https://docs.zerosettle.io/releases/android.md): Release notes for zerosettle-android — the Kotlin SDK
+- [Flutter](https://docs.zerosettle.io/releases/flutter.md): Release notes for the ZeroSettle Flutter plugin
+- [SDK Releases](https://docs.zerosettle.io/releases/index.md): Release notes for all ZeroSettle SDKs
+- [iOS (ZeroSettleKit)](https://docs.zerosettle.io/releases/ios.md): Release notes for ZeroSettleKit — the Swift SDK for iOS
+- [React Native (react-native-zerosettle)](https://docs.zerosettle.io/releases/react-native.md): Release notes for the React Native bridge to ZeroSettleKit
+
+## OpenAPI Specs
+
+- [openapi](https://docs.zerosettle.io/api-reference/openapi.json)

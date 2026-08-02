@@ -1,22 +1,270 @@
 aid: zerosettle
-name: Zerosettle
-description: Zerosettle is a company surfaced as a portfolio company of y-combinator and added to the
-  API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+name: ZeroSettle
+description: >-
+  ZeroSettle is a Y Combinator-backed subscription revenue platform that lets iOS,
+  Android, Flutter, and React Native app developers offer direct web billing as an
+  alternative to App Store and Google Play in-app purchase — the pitch is "keep 85%
+  of your revenue, not 70%." As Merchant of Record (on Stripe Connect, or BYOS), it
+  handles web checkout, entitlements, subscription lifecycle, StoreKit transaction
+  syncing, retention cancel flows, upgrade/migration offers, and compliance
+  external-purchase reporting. The ZeroSettle IAP API (REST/JSON, X-ZeroSettle-Key
+  auth) powers all of its client SDKs, with a free tier plus a $29/month Pro plan.
 url: https://raw.githubusercontent.com/api-evangelist/zerosettle/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - y-combinator
-x-tier: stub
-x-tier-reason: portfolio-lead
-specificationVersion: '0.20'
-created: '2026-07-17'
-modified: '2026-07-17'
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://zerosettle.io/images/favicon/favicon.ico
 tags:
 - Company
-apis: []
+- Payments
+- In-App Purchase
+- Subscriptions
+- Merchant of Record
+- Billing
+- Mobile
+- Developer Tools
+created: '2026-07-17'
+modified: '2026-07-21'
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: zerosettle:zerosettle-cancel-flow-api
+  name: ZeroSettle Cancel Flow API
+  description: Configurable cancel flow with retention offers
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Cancel Flow
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-cancel-flow-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-checkout-api
+  name: ZeroSettle Checkout API
+  description: Create checkout sessions and payment intents for web purchases
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Checkout
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-checkout-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-entitlements-api
+  name: ZeroSettle Entitlements API
+  description: Query user entitlements (active purchases and subscriptions)
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Entitlements
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-entitlements-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-events-api
+  name: ZeroSettle Events API
+  description: Track SDK analytics events
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-events-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-migration-api
+  name: ZeroSettle Migration API
+  description: Switch & Save migration tracking
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Migration
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-migration-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-products-api
+  name: ZeroSettle Products API
+  description: Fetch the product catalog for your app
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-products-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-restore-api
+  name: ZeroSettle Restore API
+  description: Restore purchases for a user
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Restore
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-restore-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-storekit-api
+  name: ZeroSettle StoreKit API
+  description: Sync and query StoreKit transactions
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - StoreKit
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-storekit-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-subscriptions-api
+  name: ZeroSettle Subscriptions API
+  description: Manage subscription lifecycle (cancel, pause, resume)
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-subscriptions-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-transactions-api
+  name: ZeroSettle Transactions API
+  description: Query transaction status and history
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-transactions-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-upgrade-offers-api
+  name: ZeroSettle Upgrade Offers API
+  description: Subscription upgrade/downgrade offers
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - Upgrade Offers
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-upgrade-offers-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+- aid: zerosettle:zerosettle-user-offer-api
+  name: ZeroSettle User Offer API
+  description: Unified offer + subscription-state resolver (SDK 1.2+)
+  humanURL: https://docs.zerosettle.io/api-reference/introduction
+  baseURL: https://api.zerosettle.io/v1
+  tags:
+  - User Offer
+  properties:
+  - type: OpenAPI
+    url: openapi/zerosettle-user-offer-api-openapi.yml
+  - type: ErrorCatalog
+    url: errors/zerosettle-problem-types.yml
+  - type: DataModel
+    url: data-model/zerosettle-data-model.yml
+common:
+- type: DomainSecurity
+  url: security/zerosettle-domain-security.yml
+- type: Authentication
+  url: authentication/zerosettle-authentication.yml
+- type: Packages
+  url: packages/zerosettle-packages.yml
+- type: SDKs
+  url: packages/zerosettle-packages.yml
+- type: WellKnown
+  url: well-known/zerosettle-well-known.yml
+- type: LLMsTxt
+  url: llms/zerosettle-llms.txt
+- type: Conformance
+  url: conformance/zerosettle-conformance.yml
+- type: Lifecycle
+  url: lifecycle/zerosettle-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/zerosettle-lifecycle.yml
+- type: Conventions
+  url: conventions/zerosettle-conventions.yml
+- type: ChangeLog
+  url: changelog/zerosettle-changelog.yml
+- type: Sandbox
+  url: sandbox/zerosettle-sandbox.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DeveloperPortal
+  url: https://docs.zerosettle.io
+- type: Documentation
+  url: https://docs.zerosettle.io
+- type: GitHubOrganization
+  url: https://github.com/zerosettle
+- type: APIReference
+  url: https://docs.zerosettle.io/api-reference/introduction
+- type: Quickstart
+  url: https://docs.zerosettle.io/iap/quickstart
+- type: ChangeLog
+  url: https://docs.zerosettle.io/changelog
+- type: SignUp
+  url: https://dashboard.zerosettle.io/?mode=sign-up
+- type: Login
+  url: https://dashboard.zerosettle.io/
+- type: Pricing
+  url: https://zerosettle.io/pricing/
+- type: TermsOfService
+  url: https://zerosettle.io/legal/terms
+- type: PrivacyPolicy
+  url: https://zerosettle.io/legal/privacy
+- type: Support
+  url: mailto:support@zerosettle.io
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 16
+  pass: local-v1

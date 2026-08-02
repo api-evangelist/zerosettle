@@ -1,0 +1,44 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/zerosettle-openapi.json
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for ZeroSettle IAP API
+  version: 1.0.0
+extends: ../openapi/zerosettle-openapi.json
+actions:
+- target: $.info
+  description: Annotate the API with API Evangelist network metadata and provider identity.
+  update:
+    x-api-evangelist:
+      provider: zerosettle
+      network: https://apis.io/
+      categories:
+      - payments
+      - in-app-purchase
+      - subscriptions
+      - merchant-of-record
+      docs: https://docs.zerosettle.io/api-reference/introduction
+      llms_txt: https://docs.zerosettle.io/llms.txt
+- target: $.info
+  description: Record the environment model conveyed by the publishable-key prefix.
+  update:
+    x-environments:
+      sandbox:
+        key_prefix: zs_pk_test_
+        processor: Stripe test
+      live:
+        key_prefix: zs_pk_live_
+        processor: Stripe live
+- target: $.info
+  description: Record error-envelope and pagination conventions for consumers.
+  update:
+    x-conventions:
+      error_envelope: '{ error: string, code?: string }'
+      problem_json: false
+      pagination: limit-only
+      idempotency: server-side (Merchant of Record); no consumer Idempotency-Key header
+- target: $.components.securitySchemes.ApiKeyAuth
+  description: Clarify that the key prefix selects the environment.
+  update:
+    x-environment-select-by-prefix: true

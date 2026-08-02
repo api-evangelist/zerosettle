@@ -1,0 +1,36 @@
+{
+  "provider": "zerosettle",
+  "sources": [
+    "zerosettle-cancel-flow-api-openapi.yml",
+    "zerosettle-checkout-api-openapi.yml",
+    "zerosettle-entitlements-api-openapi.yml",
+    "zerosettle-events-api-openapi.yml",
+    "zerosettle-migration-api-openapi.yml",
+    "zerosettle-products-api-openapi.yml",
+    "zerosettle-restore-api-openapi.yml",
+    "zerosettle-storekit-api-openapi.yml",
+    "zerosettle-subscriptions-api-openapi.yml",
+    "zerosettle-transactions-api-openapi.yml",
+    "zerosettle-upgrade-offers-api-openapi.yml",
+    "zerosettle-user-offer-api-openapi.yml"
+  ],
+  "outputs": [
+    "zerosettle-cancel-flow-api-openapi.yml",
+    "zerosettle-checkout-api-openapi.yml",
+    "zerosettle-entitlements-api-openapi.yml",
+    "zerosettle-events-api-openapi.yml",
+    "zerosettle-migration-api-openapi.yml",
+    "zerosettle-products-api-openapi.yml",
+    "zerosettle-restore-api-openapi.yml",
+    "zerosettle-storekit-api-openapi.yml",
+    "zerosettle-subscriptions-api-openapi.yml",
+    "zerosettle-transactions-api-openapi.yml",
+    "zerosettle-upgrade-offers-api-openapi.yml",
+    "zerosettle-user-offer-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
