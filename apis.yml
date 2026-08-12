@@ -213,6 +213,10 @@ apis:
   - type: DataModel
     url: data-model/zerosettle-data-model.yml
 common:
+- type: MCPServer
+  url: mcp/zerosettle-mcp.yml
+- type: Overlay
+  url: overlays/zerosettle-openapi-overlay.yaml
 - type: DomainSecurity
   url: security/zerosettle-domain-security.yml
 - type: Authentication
