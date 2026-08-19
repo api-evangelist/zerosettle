@@ -1,0 +1,825 @@
+{
+  "item": [
+    {
+      "id": "8d89785b-33ac-4d01-bc67-76acacf22adb",
+      "name": "Checkout",
+      "description": {
+        "content": "Create checkout sessions and payment intents for web purchases",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "97a6b2e9-d3d3-4282-a61e-3eccb10f97de",
+          "name": "Create Payment Intent",
+          "request": {
+            "name": "Create Payment Intent",
+            "description": {
+              "content": "Creates a Stripe PaymentIntent for native checkout (Apple Pay / Google Pay payment sheet). Returns a `client_secret` for confirming the payment on the client side and a `checkout_url` for fallback browser checkout.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "payment-intents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\",\n  \"checkout_domain\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"storekit_subscription_end\": \"<dateTime>\",\n  \"storekit_original_transaction_id\": \"<string>\",\n  \"external_purchase_token\": \"<string>\",\n  \"ios_version\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fdfe15e8-2856-4b7d-b2cb-b512b09bca32",
+              "name": "Payment intent created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\",\n  \"checkout_domain\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"storekit_subscription_end\": \"<dateTime>\",\n  \"storekit_original_transaction_id\": \"<string>\",\n  \"external_purchase_token\": \"<string>\",\n  \"ios_version\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"client_secret\": \"string\",\n  \"payment_intent_id\": \"string\",\n  \"transaction_id\": \"string\",\n  \"amount_cents\": 9900,\n  \"currency\": \"string\",\n  \"product_name\": \"string\",\n  \"checkout_url\": \"string\",\n  \"merchant_country\": \"string\",\n  \"original_amount_cents\": 151,\n  \"trial_type\": \"migration\",\n  \"trial_end\": 5599,\n  \"pending_amount\": 5367,\n  \"intent_type\": \"payment\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d317720c-b22b-439a-bbf0-f97d71309f7c",
+              "name": "Invalid request -- missing or malformed parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\",\n  \"checkout_domain\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"storekit_subscription_end\": \"<dateTime>\",\n  \"storekit_original_transaction_id\": \"<string>\",\n  \"external_purchase_token\": \"<string>\",\n  \"ios_version\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff055303-b714-490c-99a9-5e86497d5ef4",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\",\n  \"checkout_domain\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"storekit_subscription_end\": \"<dateTime>\",\n  \"storekit_original_transaction_id\": \"<string>\",\n  \"external_purchase_token\": \"<string>\",\n  \"ios_version\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09be3266-9978-4bd5-af2e-8793866b5f17",
+              "name": "Upstream service error (Stripe, Apple).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\",\n  \"checkout_domain\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"storekit_subscription_end\": \"<dateTime>\",\n  \"storekit_original_transaction_id\": \"<string>\",\n  \"external_purchase_token\": \"<string>\",\n  \"ios_version\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "da13a8b4-57fa-4456-b570-99ddc3be9b6e",
+          "name": "Create Payment Intent Batch",
+          "request": {
+            "name": "Create Payment Intent Batch",
+            "description": {
+              "content": "Creates Stripe PaymentIntents for multiple products in a single request. Reduces N sequential requests to 1, with shared Stripe customer/account resolution. Products that fail validation return an error entry instead of failing the entire batch. Maximum 25 products per request.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "payment-intents",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"products\": [\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    },\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    }\n  ],\n  \"user_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "19c787b6-12ed-4357-80c9-74e2a5864e5b",
+              "name": "Batch results with per-product success or error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"products\": [\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    },\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    }\n  ],\n  \"user_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"product_id\": \"string\",\n      \"client_secret\": \"string\",\n      \"transaction_id\": \"string\",\n      \"amount\": 4853,\n      \"currency\": \"string\",\n      \"product_name\": \"string\",\n      \"original_amount\": 1198,\n      \"checkout_url\": \"string\",\n      \"publishable_key\": \"string\",\n      \"stripe_account\": \"string\",\n      \"merchant_country\": \"string\",\n      \"is_subscription\": true,\n      \"subscription_interval\": \"string\",\n      \"trial_type\": \"migration\",\n      \"trial_end\": 533,\n      \"pending_amount\": 996,\n      \"error\": \"string\"\n    },\n    {\n      \"product_id\": \"string\",\n      \"client_secret\": \"string\",\n      \"transaction_id\": \"string\",\n      \"amount\": 6164,\n      \"currency\": \"string\",\n      \"product_name\": \"string\",\n      \"original_amount\": 6460,\n      \"checkout_url\": \"string\",\n      \"publishable_key\": \"string\",\n      \"stripe_account\": \"string\",\n      \"merchant_country\": \"string\",\n      \"is_subscription\": false,\n      \"subscription_interval\": \"string\",\n      \"trial_type\": \"free_trial\",\n      \"trial_end\": 7637,\n      \"pending_amount\": 7550,\n      \"error\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f3f6656b-8b69-430b-a669-585bcbe26f0e",
+              "name": "Invalid request -- missing or malformed parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"products\": [\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    },\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    }\n  ],\n  \"user_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3f27402-1263-4feb-9783-ce558ff6a2e9",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"products\": [\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    },\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    }\n  ],\n  \"user_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f128a31b-3c61-4d61-9682-bbd18331d699",
+              "name": "Upstream service error (Stripe, Apple).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "payment-intents",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"products\": [\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    },\n    {\n      \"product_id\": \"<string>\",\n      \"storekit_subscription_end\": \"<dateTime>\",\n      \"storekit_original_transaction_id\": \"<string>\"\n    }\n  ],\n  \"user_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"checkout_mode\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"customer_name\": \"<string>\",\n  \"customer_email\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6808c60a-c20d-43a6-b892-c19cbe7a5abe",
+          "name": "Create Checkout Session",
+          "request": {
+            "name": "Create Checkout Session",
+            "description": {
+              "content": "Creates a Stripe Checkout Session for browser-based checkout. Returns a URL to redirect the user to Stripe's hosted checkout page.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "checkout-sessions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"rc_app_user_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3b21db62-6851-4c4a-9c75-110974f1596d",
+              "name": "Checkout session created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "checkout-sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"rc_app_user_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checkout_session_id\": \"string\",\n  \"url\": \"string\",\n  \"client_secret\": \"string\",\n  \"transaction_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18dc2a00-53fd-4bba-8bac-a623ed2c37e3",
+              "name": "Invalid request -- missing or malformed parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "checkout-sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"rc_app_user_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "08ae6993-ef9d-420c-80ab-f4dd3afdc399",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "checkout-sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"rc_app_user_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "56cfe303-6ff8-4ddf-a8d7-a56176d795d1",
+              "name": "Upstream service error (Stripe, Apple).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "checkout-sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": \"<string>\",\n  \"external_user_id\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"platform\": \"<string>\",\n  \"stripe_customer_id\": \"<string>\",\n  \"rc_app_user_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zerosettle.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ZeroSettle-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "75154788-9db1-4714-b73c-63d01dd2b095",
+    "name": "ZeroSettle IAP Cancel Flow Checkout API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.\n\nContact Support:\n Name: ZeroSettle Support\n Email: support@zerosettle.io",
+      "type": "text/plain"
+    }
+  }
+}

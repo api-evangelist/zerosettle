@@ -1,0 +1,86 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Subscriptions API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Subscriptions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Cancel Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/subscriptions/cancel",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancels a user's active web checkout subscription. By default, access continues until the end of the current billing period (`immediate: false`). Set `immediate: true` to revoke access immediately."
+        },
+        {
+          "info": {
+            "name": "Pause Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/subscriptions/pause",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Pauses a user's active web checkout subscription. The subscription will automatically resume after the pause duration expires."
+        },
+        {
+          "info": {
+            "name": "Resume Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/subscriptions/resume",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Resumes a previously paused web checkout subscription."
+        },
+        {
+          "info": {
+            "name": "Create Customer Portal Session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/customer-portal-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a Stripe Customer Portal session URL. The portal lets users manage their subscriptions, update payment methods, and view billing history."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

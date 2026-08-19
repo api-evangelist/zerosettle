@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Restore API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Restore",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Restore Purchases",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/restore-purchases",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Restores purchases for a user by linking entitlements from a previous identity (matched by email) to the current user ID. Useful when a user reinstalls the app or signs in on a new device."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

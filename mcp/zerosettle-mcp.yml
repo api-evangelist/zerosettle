@@ -2,11 +2,9 @@ generated: '2026-07-21'
 method: derived
 source: openapi/zerosettle-openapi.json
 status: candidate
-description: >-
-  No official hosted ZeroSettle MCP server was found. This is a CANDIDATE tool
-  surface derived from the 25 operations of the ZeroSettle IAP API
-  (https://api.zerosettle.io/v1, X-ZeroSettle-Key auth) — one MCP tool per
-  operation. Not an endorsement of a live server.
+description: No official hosted ZeroSettle MCP server was found. This is a CANDIDATE tool surface derived
+  from the 25 operations of the ZeroSettle IAP API (https://api.zerosettle.io/v1, X-ZeroSettle-Key auth)
+  — one MCP tool per operation. Not an endorsement of a live server.
 official_server: none
 auth:
   type: apiKey
@@ -15,100 +13,106 @@ tools:
 - name: getProducts
   method: GET
   path: /iap/products
-  description: "Get Products"
+  description: Get Products
 - name: createPaymentIntent
   method: POST
   path: /iap/payment-intents
-  description: "Create Payment Intent"
+  description: Create Payment Intent
 - name: createPaymentIntentBatch
   method: POST
   path: /iap/payment-intents/batch
-  description: "Create Payment Intent Batch"
+  description: Create Payment Intent Batch
 - name: createCheckoutSession
   method: POST
   path: /iap/checkout-sessions
-  description: "Create Checkout Session"
+  description: Create Checkout Session
 - name: getTransaction
   method: GET
   path: /iap/transactions/{transaction_id}
-  description: "Get Transaction"
+  description: Get Transaction
 - name: updateStorekitStatus
   method: PATCH
   path: /iap/transactions/{transaction_id}/storekit-status
-  description: "Update StoreKit Status"
+  description: Update StoreKit Status
 - name: getTransactionHistory
   method: GET
   path: /iap/transaction-history
-  description: "Get Transaction History"
+  description: Get Transaction History
 - name: getEntitlements
   method: GET
   path: /iap/entitlements
-  description: "Get Entitlements"
+  description: Get Entitlements
 - name: claimEntitlement
   method: POST
   path: /iap/claim-entitlement/
-  description: "Claim Entitlement"
+  description: Claim Entitlement
 - name: syncStorekitTransaction
   method: POST
   path: /iap/storekit-transactions
-  description: "Sync StoreKit Transaction"
+  description: Sync StoreKit Transaction
 - name: getStorekitSubscriptionStatus
   method: GET
   path: /iap/storekit-subscription-status
-  description: "Get StoreKit Subscription Status"
+  description: Get StoreKit Subscription Status
 - name: getUserOffer
   method: GET
   path: /iap/user-offer
-  description: "Get User Offer"
+  description: Get User Offer
 - name: migrationConverted
   method: POST
   path: /iap/migration-converted
-  description: "Report Migration Conversion"
+  description: Report Migration Conversion
 - name: cancelSubscription
   method: POST
   path: /iap/subscriptions/cancel
-  description: "Cancel Subscription"
+  description: Cancel Subscription
 - name: pauseSubscription
   method: POST
   path: /iap/subscriptions/pause
-  description: "Pause Subscription"
+  description: Pause Subscription
 - name: resumeSubscription
   method: POST
   path: /iap/subscriptions/resume
-  description: "Resume Subscription"
+  description: Resume Subscription
 - name: createCustomerPortalSession
   method: POST
   path: /iap/customer-portal-sessions
-  description: "Create Customer Portal Session"
+  description: Create Customer Portal Session
 - name: getCancelFlow
   method: GET
   path: /iap/cancel-flow
-  description: "Get Cancel Flow"
+  description: Get Cancel Flow
 - name: submitCancelFlowResponse
   method: POST
   path: /iap/cancel-flow/respond
-  description: "Submit Cancel Flow Response"
+  description: Submit Cancel Flow Response
 - name: acceptCancelFlowOffer
   method: POST
   path: /iap/cancel-flow/accept-offer
-  description: "Accept Cancel Flow Offer"
+  description: Accept Cancel Flow Offer
 - name: getUpgradeOffer
   method: GET
   path: /iap/upgrade-offer
-  description: "Get Upgrade Offer"
+  description: Get Upgrade Offer
 - name: executeUpgradeOffer
   method: POST
   path: /iap/upgrade-offer/execute
-  description: "Execute Upgrade Offer"
+  description: Execute Upgrade Offer
 - name: respondUpgradeOffer
   method: POST
   path: /iap/upgrade-offer/respond
-  description: "Respond to Upgrade Offer"
+  description: Respond to Upgrade Offer
 - name: trackEvent
   method: POST
   path: /iap/events
-  description: "Track Event"
+  description: Track Event
 - name: restorePurchases
   method: POST
   path: /iap/restore-purchases
-  description: "Restore Purchases"
+  description: Restore Purchases
+deployment:
+  mode: none
+  verified: derived
+  tools: 25
+  checked: '2026-08-12'
+  source: catalog MCP census

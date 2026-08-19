@@ -1,0 +1,81 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Upgrade Offers API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Upgrade Offers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Upgrade Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/upgrade-offer",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "query",
+                "description": "The user's external ID."
+              },
+              {
+                "name": "product_id",
+                "value": "",
+                "type": "query",
+                "description": "Specific product to check upgrade eligibility for."
+              }
+            ]
+          },
+          "docs": "Checks if a user is eligible for a subscription upgrade and returns available upgrade options."
+        },
+        {
+          "info": {
+            "name": "Execute Upgrade Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/upgrade-offer/execute",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a subscription upgrade, creating a new payment intent or checkout session for the target product. The old subscription is cancelled with proration when the new payment succeeds."
+        },
+        {
+          "info": {
+            "name": "Respond to Upgrade Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/upgrade-offer/respond",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Records the user's response to an upgrade offer for analytics purposes."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,45 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow User Offer API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "User Offer",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get User Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/user-offer",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "query",
+                "description": "The user's external ID."
+              }
+            ]
+          },
+          "docs": "Canonical offer + subscription-state resolver (SDK 1.2+). Returns the user's current subscription variant plus exactly one offer decision (`no_action`, `migrate_storekit_to_web`, `upgrade_storekit_to_web`, or `upgrade_web_to_web`). Replaces the overlapping `/iap/products/` offer config, `/iap/upgrade-offer/`, and ad-hoc status parsing with a single typed contract. Legacy endpoints remain supported for older SDKs."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

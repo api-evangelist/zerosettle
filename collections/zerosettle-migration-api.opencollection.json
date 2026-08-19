@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Migration API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Migration",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Report Migration Conversion",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/migration-converted",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reports that a Switch & Save migration was shown or converted. Used to track migration campaign analytics."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

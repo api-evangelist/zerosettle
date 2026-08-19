@@ -1,0 +1,608 @@
+{
+  "item": [
+    {
+      "id": "07a6bb09-bad4-4d5d-a6b4-26b78ee424fe",
+      "name": "Cancel Flow",
+      "description": {
+        "content": "Configurable cancel flow with retention offers",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0e66abf0-e75c-41da-8530-c2203e9a611f",
+          "name": "Get Cancel Flow",
+          "request": {
+            "name": "Get Cancel Flow",
+            "description": {
+              "content": "Returns the configured cancel flow for the app, including survey questions, retention offers, and pause options. The SDK uses this to render a multi-step cancellation experience.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "cancel-flow"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "user_id",
+                  "value": "<string>",
+                  "description": "The user's external ID. Used to personalize offers."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "87452ae3-90ac-4cbd-be54-50f3ebf759d9",
+              "name": "Cancel flow configuration",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"enabled\": true,\n  \"questions\": [\n    {\n      \"id\": \"string\",\n      \"text\": \"string\",\n      \"type\": \"free_text\",\n      \"options\": [\n        {\n          \"id\": \"string\",\n          \"text\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"text\": \"string\"\n        }\n      ]\n    },\n    {\n      \"id\": \"string\",\n      \"text\": \"string\",\n      \"type\": \"multiple_choice\",\n      \"options\": [\n        {\n          \"id\": \"string\",\n          \"text\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"text\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"offer\": {\n    \"type\": \"discount\",\n    \"discount_percent\": 9625,\n    \"duration_months\": 7078,\n    \"title\": \"string\",\n    \"message\": \"string\"\n  },\n  \"pause\": {\n    \"enabled\": false,\n    \"duration_days\": 5505,\n    \"max_duration_days\": 8228,\n    \"title\": \"string\",\n    \"message\": \"string\"\n  },\n  \"variant_id\": 3489\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "37761403-5c51-4e10-a7d1-2e5df0305278",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "622fb5c7-e381-4bdb-a9a8-63ead3af2cc2",
+          "name": "Submit Cancel Flow Response",
+          "request": {
+            "name": "Submit Cancel Flow Response",
+            "description": {
+              "content": "Submits the user's responses from the cancel flow, including survey answers and the final outcome (cancelled, retained, dismissed, or paused). Used for cancel flow analytics.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "cancel-flow",
+                "respond"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"<string>\",\n  \"outcome\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"offer_shown\": \"<boolean>\",\n  \"offer_accepted\": \"<boolean>\",\n  \"pause_shown\": \"<boolean>\",\n  \"pause_accepted\": \"<boolean>\",\n  \"pause_duration_days\": \"<integer>\",\n  \"last_step_seen\": \"<string>\",\n  \"variant_id\": \"<integer>\",\n  \"answers\": [\n    {\n      \"question_id\": \"<string>\",\n      \"answer\": \"<string>\"\n    },\n    {\n      \"question_id\": \"<string>\",\n      \"answer\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c8189602-865e-41f8-ae71-1af8a98f32d3",
+              "name": "Response recorded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow",
+                    "respond"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"<string>\",\n  \"outcome\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"offer_shown\": \"<boolean>\",\n  \"offer_accepted\": \"<boolean>\",\n  \"pause_shown\": \"<boolean>\",\n  \"pause_accepted\": \"<boolean>\",\n  \"pause_duration_days\": \"<integer>\",\n  \"last_step_seen\": \"<string>\",\n  \"variant_id\": \"<integer>\",\n  \"answers\": [\n    {\n      \"question_id\": \"<string>\",\n      \"answer\": \"<string>\"\n    },\n    {\n      \"question_id\": \"<string>\",\n      \"answer\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f747f64-aadd-438b-b9ba-b103da5cd2b3",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow",
+                    "respond"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"<string>\",\n  \"outcome\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"offer_shown\": \"<boolean>\",\n  \"offer_accepted\": \"<boolean>\",\n  \"pause_shown\": \"<boolean>\",\n  \"pause_accepted\": \"<boolean>\",\n  \"pause_duration_days\": \"<integer>\",\n  \"last_step_seen\": \"<string>\",\n  \"variant_id\": \"<integer>\",\n  \"answers\": [\n    {\n      \"question_id\": \"<string>\",\n      \"answer\": \"<string>\"\n    },\n    {\n      \"question_id\": \"<string>\",\n      \"answer\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8f04cb77-ce5d-421b-883b-cc6be87a1fd4",
+          "name": "Accept Cancel Flow Offer",
+          "request": {
+            "name": "Accept Cancel Flow Offer",
+            "description": {
+              "content": "Accepts the retention offer shown during the cancel flow, applying a discount to the user's subscription.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "cancel-flow",
+                "accept-offer"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "39b4ba14-fd75-49f9-b1fc-2d2d1d360c0e",
+              "name": "Offer accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow",
+                    "accept-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"discount_applied\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd43b155-cc7f-4066-bf51-910c643faf06",
+              "name": "Invalid request -- missing or malformed parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow",
+                    "accept-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4ca9bd6-8315-4a15-8478-44883a42b37b",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow",
+                    "accept-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7cfcc3b4-1113-4362-b92a-3dd6c3b7611f",
+              "name": "Resource not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "cancel-flow",
+                    "accept-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zerosettle.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ZeroSettle-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d67b6c91-b7e4-4609-a9bc-c8cbc4d0e67b",
+    "name": "ZeroSettle IAP Cancel Flow API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.\n\nContact Support:\n Name: ZeroSettle Support\n Email: support@zerosettle.io",
+      "type": "text/plain"
+    }
+  }
+}

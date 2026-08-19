@@ -1,0 +1,202 @@
+{
+  "item": [
+    {
+      "id": "ce37be4c-d114-4502-ad24-6da0a7cc23e1",
+      "name": "Migration",
+      "description": {
+        "content": "Switch & Save migration tracking",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f2c5c6c9-045a-4e51-91c5-a99a3ea602aa",
+          "name": "Report Migration Conversion",
+          "request": {
+            "name": "Report Migration Conversion",
+            "description": {
+              "content": "Reports that a Switch & Save migration was shown or converted. Used to track migration campaign analytics.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "migration-converted"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variant_id\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "34ad48d2-7164-4eaa-973f-de4d024456ae",
+              "name": "Conversion recorded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "migration-converted"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"variant_id\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"conversions\": 3333\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80304777-3ece-4725-bee6-18c1a0f4f736",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "migration-converted"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"variant_id\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zerosettle.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ZeroSettle-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3d44c1f1-f9cb-4551-a14f-71727f147c20",
+    "name": "ZeroSettle IAP Cancel Flow Migration API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.\n\nContact Support:\n Name: ZeroSettle Support\n Email: support@zerosettle.io",
+      "type": "text/plain"
+    }
+  }
+}

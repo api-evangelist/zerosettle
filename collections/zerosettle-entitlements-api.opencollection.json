@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Entitlements API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Entitlements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Entitlements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/entitlements",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "query",
+                "description": "The user's external ID. Required unless `email` is provided."
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "The user's email address. Deprecated -- use `user_id` instead."
+              }
+            ]
+          },
+          "docs": "Returns all entitlements for a user, including active subscriptions, one-time purchases, and expired items. Use this to determine what the user has access to."
+        },
+        {
+          "info": {
+            "name": "Claim Entitlement",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/claim-entitlement/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Transfers an existing StoreKit entitlement to the calling user. Used when an Apple ID's StoreKit subscription is owned by a different ZeroSettle account and needs to be moved to the current account (account migration, support flows, sandbox testing). The backend verifies the supplied JWS, revokes the entitlement from the previous owner, and grants it to `user_id` in a single atomic transaction."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

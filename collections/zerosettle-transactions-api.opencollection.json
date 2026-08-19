@@ -1,0 +1,93 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Transactions API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/transactions/:transaction_id",
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction ID (UUID returned from checkout)."
+              }
+            ]
+          },
+          "docs": "Retrieves the status and details of a specific transaction by its ID."
+        },
+        {
+          "info": {
+            "name": "Update StoreKit Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.zerosettle.io/v1/iap/transactions/:transaction_id/storekit-status",
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reports a StoreKit subscription state change for a migration transaction. As of 2026-04-27, this is a *trigger to verify* endpoint: when the SDK reports `storekit_status=2` (anything other than active), the backend queries Apple's App Store Server API itself and persists what Apple reports onto the transaction's `storekit_apple_status` and `storekit_subscription_end` fields. Billing-relevant data is never sourced from the client."
+        },
+        {
+          "info": {
+            "name": "Get Transaction History",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/transaction-history",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "query",
+                "description": "The user's external ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of transactions to return. Default: 50, Max: 100."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of transactions for a given user, ordered by most recent first."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

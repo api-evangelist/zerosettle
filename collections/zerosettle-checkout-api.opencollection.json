@@ -1,0 +1,71 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Checkout API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Checkout",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Payment Intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/payment-intents",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a Stripe PaymentIntent for native checkout (Apple Pay / Google Pay payment sheet). Returns a `client_secret` for confirming the payment on the client side and a `checkout_url` for fallback browser checkout."
+        },
+        {
+          "info": {
+            "name": "Create Payment Intent Batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/payment-intents/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates Stripe PaymentIntents for multiple products in a single request. Reduces N sequential requests to 1, with shared Stripe customer/account resolution. Products that fail validation return an error entry instead of failing the entire batch. Maximum 25 products per request."
+        },
+        {
+          "info": {
+            "name": "Create Checkout Session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/checkout-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a Stripe Checkout Session for browser-based checkout. Returns a URL to redirect the user to Stripe's hosted checkout page."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

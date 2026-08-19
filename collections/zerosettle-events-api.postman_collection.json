@@ -1,0 +1,254 @@
+{
+  "item": [
+    {
+      "id": "ee9516f9-5bfa-4fd0-964f-8cf95300c907",
+      "name": "Events",
+      "description": {
+        "content": "Track SDK analytics events",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cd4c334f-e178-4768-84d0-a305b63904cb",
+          "name": "Track Event",
+          "request": {
+            "name": "Track Event",
+            "description": {
+              "content": "Tracks an analytics event from the SDK. Used for funnel analysis, screen views, and custom events.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_type\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"screen_name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ff39bb2d-83f6-4fdc-afc1-146305156205",
+              "name": "Event recorded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event_type\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"screen_name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": 2498,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7dc1f3c9-6bdc-4459-8029-02f5db6c4874",
+              "name": "Invalid request -- missing or malformed parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event_type\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"screen_name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": 2498,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7ed282d-fade-4808-8c80-eb00adff23ef",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event_type\": \"<string>\",\n  \"user_id\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"screen_name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": 2498,\n    \"key_1\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zerosettle.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ZeroSettle-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "71264d9f-517e-493a-9ef3-a057ead9f14a",
+    "name": "ZeroSettle IAP Cancel Flow Events API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.\n\nContact Support:\n Name: ZeroSettle Support\n Email: support@zerosettle.io",
+      "type": "text/plain"
+    }
+  }
+}

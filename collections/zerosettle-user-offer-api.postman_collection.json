@@ -1,0 +1,288 @@
+{
+  "item": [
+    {
+      "id": "309229e7-be70-4fe7-b635-246881e32801",
+      "name": "User Offer",
+      "description": {
+        "content": "Unified offer + subscription-state resolver (SDK 1.2+)",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "34da3c6a-b7b8-498e-b783-1c8cc4d9162a",
+          "name": "Get User Offer",
+          "request": {
+            "name": "Get User Offer",
+            "description": {
+              "content": "Canonical offer + subscription-state resolver (SDK 1.2+). Returns the user's current subscription variant plus exactly one offer decision (`no_action`, `migrate_storekit_to_web`, `upgrade_storekit_to_web`, or `upgrade_web_to_web`). Replaces the overlapping `/iap/products/` offer config, `/iap/upgrade-offer/`, and ad-hoc status parsing with a single typed contract. Legacy endpoints remain supported for older SDKs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "user-offer"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "user_id",
+                  "value": "<string>",
+                  "description": "(Required) The user's external ID."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2dd4310f-53e8-492b-a745-c72354a89fc9",
+              "name": "Canonical user offer + subscription state",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "user-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user_id\": \"string\",\n  \"app_id\": 1098,\n  \"is_sandbox\": true,\n  \"subscription\": {\n    \"type\": \"none\"\n  },\n  \"offer\": {\n    \"action_type\": \"migrate_storekit_to_web\",\n    \"is_eligible\": false,\n    \"checkout_product_id\": \"string\",\n    \"savings_percent\": 3128,\n    \"free_trial_days\": 6927,\n    \"min_subscription_days\": 3514,\n    \"requires_apple_cancel\": false,\n    \"from_product_id\": \"string\",\n    \"display\": {\n      \"title\": \"string\",\n      \"body\": \"string\",\n      \"cta_text\": \"string\",\n      \"dismiss_text\": \"string\",\n      \"accepted_title\": \"string\",\n      \"accepted_body\": \"string\",\n      \"completed_title\": \"string\",\n      \"completed_body\": \"string\",\n      \"apple_cancel_instructions\": \"string\"\n    },\n    \"proration\": {\n      \"amount_cents\": 1082,\n      \"currency\": \"string\",\n      \"next_billing_date\": \"2010-01-13T08:43:23.313Z\"\n    },\n    \"apple_subscription\": {\n      \"is_active\": false,\n      \"status_code\": 6514,\n      \"auto_renew_enabled\": false,\n      \"expires_at\": \"2006-03-02T00:17:48.270Z\"\n    },\n    \"checkout_presentation\": \"webview\",\n    \"experiment_variant_id\": 5234\n  },\n  \"server_time\": \"2025-03-14T11:41:58.601Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "488baa73-4647-41d9-ab1a-f4ffbe0fd2f8",
+              "name": "Invalid request -- missing or malformed parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "user-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f4c0424-3811-4129-b06f-81342b4501bc",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "user-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8a55fa31-8231-459f-b0af-bb8e63353010",
+              "name": "Resource not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "user-offer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zerosettle.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ZeroSettle-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "40c88aeb-0ba6-46e4-b2f1-375791077de0",
+    "name": "ZeroSettle IAP Cancel Flow User Offer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.\n\nContact Support:\n Name: ZeroSettle Support\n Email: support@zerosettle.io",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,257 @@
+{
+  "item": [
+    {
+      "id": "1ac7d902-247e-4380-a7d2-c259fdc38be5",
+      "name": "Products",
+      "description": {
+        "content": "Fetch the product catalog for your app",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d8018867-2ccf-4604-b8fc-31a2b57a43ab",
+          "name": "Get Products",
+          "request": {
+            "name": "Get Products",
+            "description": {
+              "content": "Fetches the product catalog for your app, including web and StoreKit prices, checkout configuration, trial eligibility, and any active migration campaign. Pass `user_id` to get per-user trial eligibility.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "iap",
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "user_id",
+                  "value": "<string>",
+                  "description": "The user's external ID. When provided, the response includes per-user `is_trial_eligible` on each product."
+                },
+                {
+                  "disabled": false,
+                  "key": "demo",
+                  "value": "<string>",
+                  "description": "**Debug-only.** Surfaces a dashboard-configured campaign as if the requesting user were eligible for it, regardless of their real subscription state. Lets developers preview their tip UI without crafting a specific test account.\n\n- `migration` returns the configured `MigrationCampaign` (Switch & Save) on `config.migration` (and `config.offer` mirror with `flow_type=migration`).\n- `upgrade` returns the configured `UpgradeOfferConfig` (Upgrade & Save) on `config.offer` with `flow_type=upgrade`. Uses the first `upgrade_paths` entry as the preview source/target. `savings_percent` is `0` for demo previews — accurate proration requires a real billing cycle.\n- Honored **only** on test-mode publishable keys (`zs_pk_test_*`). Live keys silently ignore the flag. Impressions are NOT counted on demo requests. Any other value (including the legacy `true`) drops the bypass and the normal user-state resolver runs."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5334b899-b64a-46ae-bfdc-648086f0eb39",
+              "name": "Product catalog with checkout configuration",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "demo",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"products\": [\n    {\n      \"id\": \"string\",\n      \"display_name\": \"string\",\n      \"product_description\": \"string\",\n      \"type\": \"non_renewing_subscription\",\n      \"web_price\": {\n        \"amount_micros\": 6773,\n        \"currency_code\": \"string\"\n      },\n      \"storekit_price\": {\n        \"amount_micros\": 6082,\n        \"currency_code\": \"string\"\n      },\n      \"subscription_group_id\": 30,\n      \"free_trial_duration\": \"string\",\n      \"is_trial_eligible\": false,\n      \"trial\": {\n        \"mode\": \"auth_hold\",\n        \"duration\": \"string\",\n        \"upfront_amount_cents\": 7786,\n        \"hold_amount_cents\": 2716,\n        \"validates_card\": false\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"display_name\": \"string\",\n      \"product_description\": \"string\",\n      \"type\": \"non_renewing_subscription\",\n      \"web_price\": {\n        \"amount_micros\": 640,\n        \"currency_code\": \"string\"\n      },\n      \"storekit_price\": {\n        \"amount_micros\": 6481,\n        \"currency_code\": \"string\"\n      },\n      \"subscription_group_id\": 4063,\n      \"free_trial_duration\": \"string\",\n      \"is_trial_eligible\": true,\n      \"trial\": {\n        \"mode\": \"paid\",\n        \"duration\": \"string\",\n        \"upfront_amount_cents\": 6368,\n        \"hold_amount_cents\": 9435,\n        \"validates_card\": false\n      }\n    }\n  ],\n  \"checkout_config\": {\n    \"sheet_type\": \"native\",\n    \"is_enabled\": true,\n    \"jurisdictions\": {\n      \"us\": {\n        \"sheet_type\": \"native\",\n        \"is_enabled\": true\n      },\n      \"eu\": {\n        \"sheet_type\": \"webview\",\n        \"is_enabled\": true\n      },\n      \"other\": {\n        \"sheet_type\": \"native\",\n        \"is_enabled\": false\n      }\n    },\n    \"apple_merchant_id\": \"string\"\n  },\n  \"migration_campaign\": {\n    \"should_show\": true,\n    \"product_id\": \"string\",\n    \"discount_percent\": 5631,\n    \"min_subscription_days\": 2096,\n    \"max_subscription_days\": 2904,\n    \"free_trial_days\": 7862,\n    \"title\": \"string\",\n    \"message\": \"string\",\n    \"variant_id\": 6338\n  },\n  \"offer\": {\n    \"flow_type\": \"migration\",\n    \"product_id\": \"string\",\n    \"eligible_product_ids\": [\n      \"string\",\n      \"string\"\n    ],\n    \"savings_percent\": 8995,\n    \"display\": {\n      \"offer_title\": \"string\",\n      \"offer_message\": \"string\",\n      \"offer_cta\": \"string\",\n      \"accepted_title\": \"string\",\n      \"accepted_message\": \"string\",\n      \"accepted_cta\": \"string\",\n      \"completed_title\": \"string\",\n      \"completed_message\": \"string\"\n    },\n    \"free_trial_days\": 6640,\n    \"min_subscription_days\": 895,\n    \"max_subscription_days\": 1681,\n    \"rollout_percent\": 8109,\n    \"upgrade_type\": \"storekit_to_web\",\n    \"from_product_id\": \"string\",\n    \"to_product_id\": \"string\",\n    \"variant_id\": 176,\n    \"per_product_prompts\": {},\n    \"checkout_presentation\": \"inline\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25a879c1-f29d-4909-ba92-bea055f668d3",
+              "name": "Invalid or missing API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "demo",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "773058c2-4c1f-41f6-b8b3-b5e4ec29d09f",
+              "name": "Account disabled or insufficient permissions.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "iap",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "demo",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ZeroSettle-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zerosettle.io/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ZeroSettle-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ab66e8a1-597c-42b7-ac27-20afed126014",
+    "name": "ZeroSettle IAP Cancel Flow Products API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.\n\nContact Support:\n Name: ZeroSettle Support\n Email: support@zerosettle.io",
+      "type": "text/plain"
+    }
+  }
+}

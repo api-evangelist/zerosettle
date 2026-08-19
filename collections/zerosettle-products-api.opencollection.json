@@ -1,0 +1,51 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow Products API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/products",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "query",
+                "description": "The user's external ID. When provided, the response includes per-user `is_trial_eligible` on each product."
+              },
+              {
+                "name": "demo",
+                "value": "",
+                "type": "query",
+                "description": "**Debug-only.** Surfaces a dashboard-configured campaign as if the requesting user were eligible for it, regardless of their real subscription state. Lets developers preview their tip UI without crafting a specific test account.\n\n- `migration` returns the configured `MigrationCampaign` (Switch & Save) on `config.migration` (and `config.offer` mirror with `flow_type=migration`).\n- `upgrade` returns the configured `UpgradeOfferConfig` (Upgrade & Save) on `config.offer` with `flow_type=upgrade`. Uses the first `upgrade_paths` entry as the preview source/target. `savings_percent` is `0` for demo previews — accurate proration requires a real billing cycle.\n- Honored **only** on test-mode publishable keys (`zs_pk_test_*`). Live keys silently ignore the flag. Impressions are NOT counted on demo requests. Any other value (including the legacy `true`) drops the bypass and the normal user-state resolver runs."
+              }
+            ]
+          },
+          "docs": "Fetches the product catalog for your app, including web and StoreKit prices, checkout configuration, trial eligibility, and any active migration campaign. Pass `user_id` to get per-user trial eligibility."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

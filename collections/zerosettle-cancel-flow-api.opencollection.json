@@ -1,0 +1,75 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroSettle IAP Cancel Flow API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ZeroSettle-Key",
+      "value": "{{X-ZeroSettle-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cancel Flow",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Cancel Flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zerosettle.io/v1/iap/cancel-flow",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "query",
+                "description": "The user's external ID. Used to personalize offers."
+              }
+            ]
+          },
+          "docs": "Returns the configured cancel flow for the app, including survey questions, retention offers, and pause options. The SDK uses this to render a multi-step cancellation experience."
+        },
+        {
+          "info": {
+            "name": "Submit Cancel Flow Response",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/cancel-flow/respond",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits the user's responses from the cancel flow, including survey answers and the final outcome (cancelled, retained, dismissed, or paused). Used for cancel flow analytics."
+        },
+        {
+          "info": {
+            "name": "Accept Cancel Flow Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zerosettle.io/v1/iap/cancel-flow/accept-offer",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Accepts the retention offer shown during the cancel flow, applying a discount to the user's subscription."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
