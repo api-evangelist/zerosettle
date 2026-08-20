@@ -32,6 +32,15 @@ tags:
 - Company
 - Payments
 - In-App Purchase
+- Subscription
+- Merchant of Record
+- Billing
+- Mobile
+- Developer Tools
+tags_raw:
+- Company
+- Payments
+- In-App Purchase
 - Subscriptions
 - Merchant of Record
 - Billing
@@ -93,6 +102,8 @@ apis:
   humanURL: https://docs.zerosettle.io/api-reference/introduction
   baseURL: https://api.zerosettle.io/v1
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -121,6 +132,8 @@ apis:
   humanURL: https://docs.zerosettle.io/api-reference/introduction
   baseURL: https://api.zerosettle.io/v1
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
@@ -163,6 +176,8 @@ apis:
   humanURL: https://docs.zerosettle.io/api-reference/introduction
   baseURL: https://api.zerosettle.io/v1
   tags:
+  - Subscription
+  tags_raw:
   - Subscriptions
   properties:
   - type: OpenAPI
@@ -177,6 +192,8 @@ apis:
   humanURL: https://docs.zerosettle.io/api-reference/introduction
   baseURL: https://api.zerosettle.io/v1
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
