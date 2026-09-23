@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: ZeroSettle IAP Cancel Flow Subscriptions API
+  title: ZeroSettle IAP Subscriptions API
   description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
   version: 1.0.0
   contact:
@@ -169,44 +169,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    ResumeResponse:
-      type: object
-      description: Response from resuming a subscription.
-      properties:
-        status:
-          type: string
-          description: Result status.
-        resumed_at:
-          type: string
-          format: date-time
-          description: When the subscription was resumed.
-    PauseResponse:
-      type: object
-      description: Response from pausing a subscription.
-      properties:
-        status:
-          type: string
-          description: Result status.
-        paused_at:
-          type: string
-          format: date-time
-          description: When the subscription was paused.
-        resumes_at:
-          type: string
-          format: date-time
-          description: When the subscription will automatically resume.
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     CancelResponse:
       type: object
       description: Response from cancelling a subscription.
@@ -222,13 +184,45 @@ components:
           type: string
           format: date-time
           description: When the user will lose access (end of billing period for non-immediate cancellations).
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    PauseResponse:
+      type: object
+      description: Response from pausing a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        paused_at:
+          type: string
+          format: date-time
+          description: When the subscription was paused.
+        resumes_at:
+          type: string
+          format: date-time
+          description: When the subscription will automatically resume.
+    ResumeResponse:
+      type: object
+      description: Response from resuming a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        resumed_at:
+          type: string
+          format: date-time
+          description: When the subscription was resumed.
   responses:
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Invalid request -- missing or malformed parameters.
       content:
@@ -237,6 +231,12 @@ components:
             $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
       content:
         application/json:
           schema:

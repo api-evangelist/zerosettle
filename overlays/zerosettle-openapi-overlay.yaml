@@ -1,6 +1,6 @@
-generated: '2026-07-21'
-method: generated
-source: openapi/zerosettle-openapi.json
+x-generated: '2026-07-21'
+x-method: generated
+x-source: openapi/zerosettle-openapi.json
 overlay: 1.0.0
 info:
   title: API Evangelist enrichment overlay for ZeroSettle IAP API

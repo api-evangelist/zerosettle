@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: ZeroSettle IAP Cancel Flow User Offer API
+  title: ZeroSettle IAP User Offer API
   description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
   version: 1.0.0
   contact:
@@ -45,51 +45,44 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    SubscriptionStateActiveWeb:
+    UserOfferSubscription:
+      description: Tagged-union describing the user's current subscription state. Discriminated by the `type` field. Exactly one variant is returned per request.
+      oneOf:
+      - $ref: '#/components/schemas/SubscriptionStateNone'
+      - $ref: '#/components/schemas/SubscriptionStateActiveWeb'
+      - $ref: '#/components/schemas/SubscriptionStateActiveStorekit'
+      - $ref: '#/components/schemas/SubscriptionStateMigrationTrial'
+      - $ref: '#/components/schemas/SubscriptionStateCancelledActive'
+      discriminator:
+        propertyName: type
+        mapping:
+          none: '#/components/schemas/SubscriptionStateNone'
+          active_web: '#/components/schemas/SubscriptionStateActiveWeb'
+          active_storekit: '#/components/schemas/SubscriptionStateActiveStorekit'
+          migration_trial: '#/components/schemas/SubscriptionStateMigrationTrial'
+          cancelled_active: '#/components/schemas/SubscriptionStateCancelledActive'
+    SubscriptionStateNone:
       type: object
-      description: User has an active web-sourced subscription (may be in grace period, past due, or paused).
+      description: User has no active subscription entitlement from any source.
       required:
       - type
-      - product_id
-      - status
-      - is_trial
-      - will_renew
-      - stripe_subscription_id
-      - entitlement_id
       properties:
         type:
           type: string
           enum:
-          - active_web
-        product_id:
+          - none
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
           type: string
-          description: Reference ID of the active product.
-        subscription_group_id:
-          type: integer
-          nullable: true
-          description: ZeroSettle subscription group ID, if any.
-        status:
+          description: Human-readable error message.
+        code:
           type: string
-          description: EntitlementStatus value (e.g., `active`, `grace_period`, `past_due`, `paused`, `cancelled`).
-        expires_at:
-          type: string
-          format: date-time
-          nullable: true
-          description: When the current period ends / next renewal is due.
-        trial_ends_at:
-          type: string
-          format: date-time
-          nullable: true
-          description: Trial end timestamp when `is_trial` is `true`.
-        is_trial:
-          type: boolean
-        will_renew:
-          type: boolean
-          description: Whether the subscription is set to auto-renew at period end.
-        stripe_subscription_id:
-          type: string
-        entitlement_id:
-          type: integer
+          description: Machine-readable error code (not always present).
+      required:
+      - error
     SubscriptionStateCancelledActive:
       type: object
       description: Subscription is cancelled but access remains until `expires_at`.
@@ -110,17 +103,193 @@ components:
         product_id:
           type: string
         subscription_group_id:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         expires_at:
           type: string
           format: date-time
         stripe_subscription_id:
+          type:
+          - string
+          - 'null'
+        storekit_original_transaction_id:
+          type:
+          - string
+          - 'null'
+        entitlement_id:
+          type: integer
+    SubscriptionStateActiveStorekit:
+      type: object
+      description: User has an active StoreKit-sourced subscription.
+      required:
+      - type
+      - product_id
+      - status
+      - expires_at
+      - is_trial
+      - will_renew
+      - storekit_original_transaction_id
+      - entitlement_id
+      properties:
+        type:
           type: string
-          nullable: true
+          enum:
+          - active_storekit
+        product_id:
+          type: string
+        subscription_group_id:
+          type:
+          - integer
+          - 'null'
+        status:
+          type: string
+          description: EntitlementStatus value.
+        expires_at:
+          type: string
+          format: date-time
+        is_trial:
+          type: boolean
+        trial_ends_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        will_renew:
+          type: boolean
         storekit_original_transaction_id:
           type: string
-          nullable: true
+        entitlement_id:
+          type: integer
+    OfferEligibility:
+      type: object
+      description: The offer decision. Exactly one `action_type` is returned per user per request. `is_eligible` is `false` iff `action_type` is `no_action`.
+      required:
+      - action_type
+      - is_eligible
+      - checkout_product_id
+      - savings_percent
+      - free_trial_days
+      - min_subscription_days
+      - requires_apple_cancel
+      properties:
+        action_type:
+          type: string
+          enum:
+          - no_action
+          - migrate_storekit_to_web
+          - upgrade_storekit_to_web
+          - upgrade_web_to_web
+          description: Which offer branch fired. `no_action` = nothing to show.
+        is_eligible:
+          type: boolean
+          description: Convenience boolean; equivalent to `action_type != 'no_action'`.
+        checkout_product_id:
+          type: string
+          description: Product ID the SDK should drive checkout toward. Empty string when `action_type` is `no_action`.
+        from_product_id:
+          type:
+          - string
+          - 'null'
+          description: The product the user is currently on (relevant for upgrade/migrate flows).
+        savings_percent:
+          type: integer
+          description: Annualized savings percent vs. the user's current plan, 0 when not applicable.
+        free_trial_days:
+          type: integer
+          description: Days of free trial the SDK should honor on the new subscription.
+        min_subscription_days:
+          type: integer
+          description: Minimum subscribed days before the offer becomes eligible (for rollout/lock-in rules).
+        display:
+          $ref: '#/components/schemas/OfferDisplayV2'
+        proration:
+          $ref: '#/components/schemas/OfferProration'
+        requires_apple_cancel:
+          type: boolean
+          description: Whether the user must cancel their StoreKit subscription after the new checkout completes (true for `migrate_*` / `upgrade_storekit_to_web`).
+        apple_subscription:
+          $ref: '#/components/schemas/AppleSubscriptionSummary'
+        checkout_presentation:
+          type:
+          - string
+          - 'null'
+          enum:
+          - webview
+          - native_pay
+          - safari_vc
+          - safari
+          description: How the SDK should present checkout for this offer.
+        experiment_variant_id:
+          type:
+          - integer
+          - 'null'
+          description: A/B experiment variant ID when this offer is part of an experiment.
+    OfferProration:
+      type: object
+      description: Stripe proration preview for web-to-web upgrades. Present only when `action_type` is `upgrade_web_to_web`.
+      required:
+      - amount_cents
+      - currency
+      properties:
+        amount_cents:
+          type: integer
+          description: Credit applied from the old subscription, in minor currency units. Negative values represent money owed back to the user.
+        currency:
+          type: string
+          description: ISO-4217 currency code for the proration amount.
+        next_billing_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the customer will next be billed on the upgraded plan.
+    SubscriptionStateActiveWeb:
+      type: object
+      description: User has an active web-sourced subscription (may be in grace period, past due, or paused).
+      required:
+      - type
+      - product_id
+      - status
+      - is_trial
+      - will_renew
+      - stripe_subscription_id
+      - entitlement_id
+      properties:
+        type:
+          type: string
+          enum:
+          - active_web
+        product_id:
+          type: string
+          description: Reference ID of the active product.
+        subscription_group_id:
+          type:
+          - integer
+          - 'null'
+          description: ZeroSettle subscription group ID, if any.
+        status:
+          type: string
+          description: EntitlementStatus value (e.g., `active`, `grace_period`, `past_due`, `paused`, `cancelled`).
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the current period ends / next renewal is due.
+        trial_ends_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Trial end timestamp when `is_trial` is `true`.
+        is_trial:
+          type: boolean
+        will_renew:
+          type: boolean
+          description: Whether the subscription is set to auto-renew at period end.
+        stripe_subscription_id:
+          type: string
         entitlement_id:
           type: integer
     SubscriptionStateMigrationTrial:
@@ -145,8 +314,9 @@ components:
         storekit_product_id:
           type: string
         subscription_group_id:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         trial_ends_at:
           type: string
           format: date-time
@@ -159,46 +329,27 @@ components:
           type: string
         entitlement_id:
           type: integer
-    SubscriptionStateActiveStorekit:
+    AppleSubscriptionSummary:
       type: object
-      description: User has an active StoreKit-sourced subscription.
+      description: Normalized view of the user's Apple (StoreKit) subscription. Present only when the user currently has — or recently had — a StoreKit entitlement. Clients should rely on `is_active` rather than deriving activeness from `status_code`.
       required:
-      - type
-      - product_id
-      - status
-      - expires_at
-      - is_trial
-      - will_renew
-      - storekit_original_transaction_id
-      - entitlement_id
+      - is_active
+      - status_code
+      - auto_renew_enabled
       properties:
-        type:
-          type: string
-          enum:
-          - active_storekit
-        product_id:
-          type: string
-        subscription_group_id:
-          type: integer
-          nullable: true
-        status:
-          type: string
-          description: EntitlementStatus value.
+        is_active:
+          type: boolean
+          description: Canonical active-entitlement flag, normalized server-side from the Apple status code.
         expires_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-        is_trial:
-          type: boolean
-        trial_ends_at:
-          type: string
-          format: date-time
-          nullable: true
-        will_renew:
-          type: boolean
-        storekit_original_transaction_id:
-          type: string
-        entitlement_id:
+        status_code:
           type: integer
+          description: Raw Apple status code (1=active, 2=expired, 3=billing_retry, 4=grace_period, 5=revoked). Diagnostic only — prefer `is_active`.
+        auto_renew_enabled:
+          type: boolean
     UserOfferResponse:
       type: object
       description: Canonical response from `GET /iap/user-offer/`. Wraps the user's current subscription state (as a tagged union keyed by `subscription.type`) together with exactly one offer decision.
@@ -227,146 +378,6 @@ components:
           type: string
           format: date-time
           description: Server-side timestamp at which the response was resolved (ISO 8601). Useful for client-side cache invalidation.
-    UserOfferSubscription:
-      description: Tagged-union describing the user's current subscription state. Discriminated by the `type` field. Exactly one variant is returned per request.
-      oneOf:
-      - $ref: '#/components/schemas/SubscriptionStateNone'
-      - $ref: '#/components/schemas/SubscriptionStateActiveWeb'
-      - $ref: '#/components/schemas/SubscriptionStateActiveStorekit'
-      - $ref: '#/components/schemas/SubscriptionStateMigrationTrial'
-      - $ref: '#/components/schemas/SubscriptionStateCancelledActive'
-      discriminator:
-        propertyName: type
-        mapping:
-          none: '#/components/schemas/SubscriptionStateNone'
-          active_web: '#/components/schemas/SubscriptionStateActiveWeb'
-          active_storekit: '#/components/schemas/SubscriptionStateActiveStorekit'
-          migration_trial: '#/components/schemas/SubscriptionStateMigrationTrial'
-          cancelled_active: '#/components/schemas/SubscriptionStateCancelledActive'
-    AppleSubscriptionSummary:
-      type: object
-      description: Normalized view of the user's Apple (StoreKit) subscription. Present only when the user currently has — or recently had — a StoreKit entitlement. Clients should rely on `is_active` rather than deriving activeness from `status_code`.
-      required:
-      - is_active
-      - status_code
-      - auto_renew_enabled
-      properties:
-        is_active:
-          type: boolean
-          description: Canonical active-entitlement flag, normalized server-side from the Apple status code.
-        expires_at:
-          type: string
-          format: date-time
-          nullable: true
-        status_code:
-          type: integer
-          description: Raw Apple status code (1=active, 2=expired, 3=billing_retry, 4=grace_period, 5=revoked). Diagnostic only — prefer `is_active`.
-        auto_renew_enabled:
-          type: boolean
-    SubscriptionStateNone:
-      type: object
-      description: User has no active subscription entitlement from any source.
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          enum:
-          - none
-    OfferProration:
-      type: object
-      description: Stripe proration preview for web-to-web upgrades. Present only when `action_type` is `upgrade_web_to_web`.
-      required:
-      - amount_cents
-      - currency
-      properties:
-        amount_cents:
-          type: integer
-          description: Credit applied from the old subscription, in minor currency units. Negative values represent money owed back to the user.
-        currency:
-          type: string
-          description: ISO-4217 currency code for the proration amount.
-        next_billing_date:
-          type: string
-          format: date-time
-          nullable: true
-          description: When the customer will next be billed on the upgraded plan.
-    OfferEligibility:
-      type: object
-      description: The offer decision. Exactly one `action_type` is returned per user per request. `is_eligible` is `false` iff `action_type` is `no_action`.
-      required:
-      - action_type
-      - is_eligible
-      - checkout_product_id
-      - savings_percent
-      - free_trial_days
-      - min_subscription_days
-      - requires_apple_cancel
-      properties:
-        action_type:
-          type: string
-          enum:
-          - no_action
-          - migrate_storekit_to_web
-          - upgrade_storekit_to_web
-          - upgrade_web_to_web
-          description: Which offer branch fired. `no_action` = nothing to show.
-        is_eligible:
-          type: boolean
-          description: Convenience boolean; equivalent to `action_type != 'no_action'`.
-        checkout_product_id:
-          type: string
-          description: Product ID the SDK should drive checkout toward. Empty string when `action_type` is `no_action`.
-        from_product_id:
-          type: string
-          nullable: true
-          description: The product the user is currently on (relevant for upgrade/migrate flows).
-        savings_percent:
-          type: integer
-          description: Annualized savings percent vs. the user's current plan, 0 when not applicable.
-        free_trial_days:
-          type: integer
-          description: Days of free trial the SDK should honor on the new subscription.
-        min_subscription_days:
-          type: integer
-          description: Minimum subscribed days before the offer becomes eligible (for rollout/lock-in rules).
-        display:
-          $ref: '#/components/schemas/OfferDisplayV2'
-          nullable: true
-        proration:
-          $ref: '#/components/schemas/OfferProration'
-          nullable: true
-        requires_apple_cancel:
-          type: boolean
-          description: Whether the user must cancel their StoreKit subscription after the new checkout completes (true for `migrate_*` / `upgrade_storekit_to_web`).
-        apple_subscription:
-          $ref: '#/components/schemas/AppleSubscriptionSummary'
-          nullable: true
-        checkout_presentation:
-          type: string
-          enum:
-          - webview
-          - native_pay
-          - safari_vc
-          - safari
-          nullable: true
-          description: How the SDK should present checkout for this offer.
-        experiment_variant_id:
-          type: integer
-          nullable: true
-          description: A/B experiment variant ID when this offer is part of an experiment.
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     OfferDisplayV2:
       type: object
       description: Presentation copy for the user-offer card. Distinct from the legacy `OfferDisplay` schema used by `/iap/products/` offer config — field names are simplified and the copy is localized + interpolated server-side.
@@ -400,12 +411,6 @@ components:
           type: string
           description: Localized instructions shown in the accepted-state card when `requires_apple_cancel` is `true`. May be empty.
   responses:
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Invalid request -- missing or malformed parameters.
       content:
@@ -414,6 +419,12 @@ components:
             $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
       content:
         application/json:
           schema:

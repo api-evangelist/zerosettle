@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: ZeroSettle IAP Cancel Flow Transactions API
+  title: ZeroSettle IAP Transactions API
   description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
   version: 1.0.0
   contact:
@@ -139,26 +139,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
     Transaction:
       type: object
       description: A purchase transaction.
@@ -191,12 +184,14 @@ components:
           description: ISO 8601 timestamp of when the purchase was made.
         storekit_status:
           description: 'StoreKit finish status: `1` = active (finished), `2` = anything-not-active (cancelled, expired, billing retry, grace period, revoked). Null for web checkout transactions. This is a coarse SDK-reported flag; consult `storekit_apple_status` for Apple''s full state.'
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         storekit_apple_status:
           description: Apple's full subscription status code from the App Store Server API. `1` = Active, `2` = Expired, `3` = BillingRetry, `4` = GracePeriod, `5` = Revoked. Null when no Apple-verified state has been recorded (e.g., before the SDK has reported a state change, or when ASC credentials are not configured for the tenant).
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           enum:
           - 1
           - 2
@@ -205,21 +200,10 @@ components:
           - 5
         expires_at:
           description: ISO 8601 expiry timestamp for subscription transactions. Null for one-time purchases.
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     TransactionHistoryItem:
       type: object
       description: A transaction in the user's history.
@@ -261,9 +245,29 @@ components:
           description: Display name of the product.
         expires_at:
           description: Subscription expiry timestamp, or null.
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
+  responses:
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

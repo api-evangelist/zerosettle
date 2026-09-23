@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: ZeroSettle IAP Cancel Flow Upgrade Offers API
+  title: ZeroSettle IAP Upgrade Offers API
   description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
   version: 1.0.0
   contact:
@@ -125,37 +125,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    UpgradeOffer:
-      type: object
-      description: Upgrade offer eligibility and options.
-      properties:
-        eligible:
-          type: boolean
-          description: Whether the user is eligible for an upgrade.
-        current_product_id:
-          type: string
-          description: The user's current subscription product ID.
-        eligible_upgrades:
-          type: array
-          description: Products the user can upgrade to.
-          items:
-            type: object
-            properties:
-              product_id:
-                type: string
-                description: The upgrade target product's reference ID.
-              display_name:
-                type: string
-                description: Product display name.
-              price:
-                $ref: '#/components/schemas/Price'
-              savings_percent:
-                type: integer
-                description: Percentage savings compared to the current plan (annualized).
-        variant_id:
-          description: Experiment variant ID if the upgrade offer is part of an A/B test.
-          type: integer
-          nullable: true
     UpgradeExecuteResponse:
       type: object
       description: Response from executing an upgrade.
@@ -197,6 +166,38 @@ components:
           description: Machine-readable error code (not always present).
       required:
       - error
+    UpgradeOffer:
+      type: object
+      description: Upgrade offer eligibility and options.
+      properties:
+        eligible:
+          type: boolean
+          description: Whether the user is eligible for an upgrade.
+        current_product_id:
+          type: string
+          description: The user's current subscription product ID.
+        eligible_upgrades:
+          type: array
+          description: Products the user can upgrade to.
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: The upgrade target product's reference ID.
+              display_name:
+                type: string
+                description: Product display name.
+              price:
+                $ref: '#/components/schemas/Price'
+              savings_percent:
+                type: integer
+                description: Percentage savings compared to the current plan (annualized).
+        variant_id:
+          description: Experiment variant ID if the upgrade offer is part of an A/B test.
+          type:
+          - integer
+          - 'null'
   responses:
     BadRequest:
       description: Invalid request -- missing or malformed parameters.
@@ -204,14 +205,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
+    NotFound:
+      description: Resource not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource not found.
+    Unauthorized:
+      description: Invalid or missing API key.
       content:
         application/json:
           schema:

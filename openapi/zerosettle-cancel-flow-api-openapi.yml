@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: ZeroSettle IAP Cancel Flow API
   description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
@@ -158,25 +158,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     CancelFlowPause:
       type: object
@@ -213,16 +194,27 @@ components:
           description: Retention offer to show, or null if none is configured.
           allOf:
           - $ref: '#/components/schemas/CancelFlowOffer'
-          nullable: true
         pause:
           description: Pause option configuration, or null if pause is not enabled.
           allOf:
           - $ref: '#/components/schemas/CancelFlowPause'
-          nullable: true
         variant_id:
           description: Experiment variant ID if the cancel flow is part of an A/B test.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
     CancelFlowOffer:
       type: object
       description: A retention offer in the cancel flow.
@@ -274,18 +266,25 @@ components:
                 type: string
                 description: Option text.
           description: Available answer options (for choice questions).
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
+  responses:
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

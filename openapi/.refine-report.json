@@ -1,18 +1,7 @@
 {
   "provider": "zerosettle",
   "sources": [
-    "zerosettle-cancel-flow-api-openapi.yml",
-    "zerosettle-checkout-api-openapi.yml",
-    "zerosettle-entitlements-api-openapi.yml",
-    "zerosettle-events-api-openapi.yml",
-    "zerosettle-migration-api-openapi.yml",
-    "zerosettle-products-api-openapi.yml",
-    "zerosettle-restore-api-openapi.yml",
-    "zerosettle-storekit-api-openapi.yml",
-    "zerosettle-subscriptions-api-openapi.yml",
-    "zerosettle-transactions-api-openapi.yml",
-    "zerosettle-upgrade-offers-api-openapi.yml",
-    "zerosettle-user-offer-api-openapi.yml"
+    "_original/zerosettle-openapi.json"
   ],
   "outputs": [
     "zerosettle-cancel-flow-api-openapi.yml",
@@ -31,6 +20,23 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "zerosettle-openapi.json: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "zerosettle-cancel-flow-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-checkout-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-entitlements-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-migration-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-restore-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-storekit-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-subscriptions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-transactions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-upgrade-offers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zerosettle-user-offer-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

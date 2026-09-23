@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: ZeroSettle IAP Cancel Flow Checkout API
+  title: ZeroSettle IAP Checkout API
   description: The ZeroSettle IAP API powers the iOS, Android, and Flutter SDKs. It enables product catalog fetching, web checkout, entitlement management, subscription lifecycle operations, and StoreKit transaction syncing. All endpoints are authenticated via the `X-ZeroSettle-Key` header.
   version: 1.0.0
   contact:
@@ -199,12 +199,14 @@ paths:
                           type: string
                           description: Stripe publishable key for confirming the payment. Present on success.
                         stripe_account:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                           description: Connected Stripe account ID for BYOS. Null for managed mode.
                         merchant_country:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                           description: ISO 3166-1 alpha-2 country code for Apple Pay.
                         is_subscription:
                           type: boolean
@@ -213,19 +215,22 @@ paths:
                           type: string
                           description: Subscription billing interval (e.g., `month`, `week`). Present for subscriptions.
                         trial_type:
-                          type: string
+                          type:
+                          - string
+                          - 'null'
                           enum:
                           - free_trial
                           - migration
-                          nullable: true
                           description: Type of trial applied. Omitted when no trial.
                         trial_end:
-                          type: integer
-                          nullable: true
+                          type:
+                          - integer
+                          - 'null'
                           description: Unix timestamp when trial ends. Only present with active trial.
                         pending_amount:
-                          type: integer
-                          nullable: true
+                          type:
+                          - integer
+                          - 'null'
                           description: Amount billed when trial ends. Only present with active trial.
                         error:
                           type: string
@@ -288,6 +293,25 @@ paths:
         '502':
           $ref: '#/components/responses/UpstreamError'
 components:
+  responses:
+    UpstreamError:
+      description: Upstream service error (Stripe, Apple).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     CheckoutSessionResponse:
       type: object
@@ -305,6 +329,18 @@ components:
         transaction_id:
           type: string
           description: ZeroSettle transaction ID.
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
     PaymentIntentResponse:
       type: object
       description: Response from creating a payment intent.
@@ -337,19 +373,22 @@ components:
           type: integer
           description: The original price before any discounts or prorations.
         trial_type:
-          type: string
+          type:
+          - string
+          - 'null'
           enum:
           - free_trial
           - migration
-          nullable: true
           description: The type of trial applied to this checkout. `free_trial` for standard free trials, `migration` for Switch & Save aligned trials. Omitted when no trial is active.
         trial_end:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           description: Unix timestamp when the trial period ends. Only present when a trial is active.
         pending_amount:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           description: The charge amount in cents that will be billed when the trial ends. Only present when a trial is active.
         intent_type:
           type: string
@@ -357,37 +396,6 @@ components:
           - setup
           - payment
           description: 'Discriminator for which Stripe confirm method the client must call. `setup`: confirms a SetupIntent (free trial — card saved, no immediate charge); `payment`: confirms a PaymentIntent (paid/auth_hold trial upfront charge, or any normal charge). Also returned by `POST /iap/payment-intents/{transaction_id}/finalize/` with the same semantics.'
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
-  responses:
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    UpstreamError:
-      description: Upstream service error (Stripe, Apple).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
