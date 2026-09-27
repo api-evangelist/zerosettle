@@ -294,8 +294,8 @@ paths:
           $ref: '#/components/responses/UpstreamError'
 components:
   responses:
-    UpstreamError:
-      description: Upstream service error (Stripe, Apple).
+    Unauthorized:
+      description: Invalid or missing API key.
       content:
         application/json:
           schema:
@@ -306,41 +306,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
+    UpstreamError:
+      description: Upstream service error (Stripe, Apple).
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    CheckoutSessionResponse:
-      type: object
-      description: Response from creating a checkout session.
-      properties:
-        checkout_session_id:
-          type: string
-          description: Stripe Checkout Session ID.
-        url:
-          type: string
-          description: URL to redirect the user to for checkout.
-        client_secret:
-          type: string
-          description: Client secret for embedded checkout.
-        transaction_id:
-          type: string
-          description: ZeroSettle transaction ID.
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     PaymentIntentResponse:
       type: object
       description: Response from creating a payment intent.
@@ -396,6 +368,34 @@ components:
           - setup
           - payment
           description: 'Discriminator for which Stripe confirm method the client must call. `setup`: confirms a SetupIntent (free trial — card saved, no immediate charge); `payment`: confirms a PaymentIntent (paid/auth_hold trial upfront charge, or any normal charge). Also returned by `POST /iap/payment-intents/{transaction_id}/finalize/` with the same semantics.'
+    CheckoutSessionResponse:
+      type: object
+      description: Response from creating a checkout session.
+      properties:
+        checkout_session_id:
+          type: string
+          description: Stripe Checkout Session ID.
+        url:
+          type: string
+          description: URL to redirect the user to for checkout.
+        client_secret:
+          type: string
+          description: Client secret for embedded checkout.
+        transaction_id:
+          type: string
+          description: ZeroSettle transaction ID.
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

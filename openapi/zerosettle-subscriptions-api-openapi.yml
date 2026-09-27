@@ -169,6 +169,17 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    ResumeResponse:
+      type: object
+      description: Response from resuming a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        resumed_at:
+          type: string
+          format: date-time
+          description: When the subscription was resumed.
     CancelResponse:
       type: object
       description: Response from cancelling a subscription.
@@ -184,18 +195,6 @@ components:
           type: string
           format: date-time
           description: When the user will lose access (end of billing period for non-immediate cancellations).
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     PauseResponse:
       type: object
       description: Response from pausing a subscription.
@@ -211,24 +210,19 @@ components:
           type: string
           format: date-time
           description: When the subscription will automatically resume.
-    ResumeResponse:
+    Error:
       type: object
-      description: Response from resuming a subscription.
+      description: Error response.
       properties:
-        status:
+        error:
           type: string
-          description: Result status.
-        resumed_at:
+          description: Human-readable error message.
+        code:
           type: string
-          format: date-time
-          description: When the subscription was resumed.
+          description: Machine-readable error code (not always present).
+      required:
+      - error
   responses:
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource not found.
       content:
@@ -237,6 +231,12 @@ components:
             $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
       content:
         application/json:
           schema:

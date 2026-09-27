@@ -77,176 +77,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 components:
-  responses:
-    Forbidden:
-      description: Account disabled or insufficient permissions.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Price:
-      type: object
-      description: A price in micros (1/1,000,000 of the currency unit).
-      properties:
-        amount_micros:
-          type: integer
-          description: Price in micros. For example, $4.99 = 4990000.
-        currency_code:
-          type: string
-          description: ISO 4217 currency code (e.g., `USD`).
-    OfferDisplay:
-      type: object
-      description: Server-configurable copy for every tip card state. Empty strings mean the SDK should use its hardcoded defaults.
-      required:
-      - offer_title
-      - offer_message
-      - offer_cta
-      - accepted_title
-      - accepted_message
-      - accepted_cta
-      - completed_title
-      - completed_message
-      properties:
-        offer_title:
-          type: string
-          description: Title for the offer card (e.g., 'Thanks for being with us!').
-        offer_message:
-          type: string
-          description: Main offer body text.
-        offer_cta:
-          type: string
-          description: CTA button text (e.g., 'Save 20% Forever').
-        accepted_title:
-          type: string
-          description: Post-checkout title (e.g., 'Thanks for switching!').
-        accepted_message:
-          type: string
-          description: Post-checkout message with Apple cancel instructions.
-        accepted_cta:
-          type: string
-          description: Post-checkout CTA (e.g., 'Cancel Apple Billing').
-        completed_title:
-          type: string
-          description: Success title (e.g., 'Congratulations!').
-        completed_message:
-          type: string
-          description: Success message (e.g., 'You are now saving 20% forever.').
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
-    Product:
-      type: object
-      description: A product in the catalog.
-      properties:
-        id:
-          type: string
-          description: The product's reference ID (e.g., `com.app.premium.monthly`).
-        display_name:
-          type: string
-          description: Human-readable product name.
-        product_description:
-          type: string
-          description: Product description text.
-        type:
-          type: string
-          enum:
-          - consumable
-          - non_consumable
-          - non_renewing_subscription
-          - auto_renewable_subscription
-          description: The product type.
-        web_price:
-          description: The web checkout price, or null if not available for web purchase.
-          allOf:
-          - $ref: '#/components/schemas/Price'
-        storekit_price:
-          description: The StoreKit price from App Store Connect, or null if not synced.
-          allOf:
-          - $ref: '#/components/schemas/Price'
-        subscription_group_id:
-          description: The subscription group this product belongs to, or null for non-subscription products.
-          type:
-          - integer
-          - 'null'
-        free_trial_duration:
-          description: ISO 8601 duration for the free trial period (e.g., `P7D` for 7 days), or null if no trial is configured.
-          type:
-          - string
-          - 'null'
-        is_trial_eligible:
-          description: Whether the current user is eligible for a free trial on this product. Null if `user_id` was not provided in the request.
-          type:
-          - boolean
-          - 'null'
-        trial:
-          description: Trial mode details for this product. Present only for `auto_renewable_subscription` products that have a free trial configured AND whose trial eligibility was resolved (i.e., `user_id` was included in the request and the user is trial-eligible). Absent for non-subscription products, products without a trial, and anonymous requests.
-          type:
-          - object
-          - 'null'
-          properties:
-            mode:
-              type: string
-              enum:
-              - free
-              - paid
-              - auth_hold
-              description: 'How the trial is collected. `free`: no charge during the trial period; the payment method is saved and billed at trial end. `paid`: a real upfront charge of `upfront_amount_cents` is collected immediately and kept; the full subscription price is billed at trial end. `auth_hold`: a temporary authorization hold of `hold_amount_cents` is placed (shown as a pending charge); released when the subscription converts or is cancelled.'
-            duration:
-              type: string
-              description: Duration token for the trial period (e.g., `1_week`, `3_days`, `1_month`). This is a ZeroSettle token, not an ISO 8601 duration. The app should map this to its own display copy.
-            upfront_amount_cents:
-              type: integer
-              description: 'For `paid` mode: the real charge collected at checkout, in cents. Zero for `free` and `auth_hold` modes.'
-            hold_amount_cents:
-              type: integer
-              description: 'For `auth_hold` mode: the authorization hold amount placed at checkout, in cents. Zero for `free` and `paid` modes.'
-            validates_card:
-              type: boolean
-              description: '`true` for `paid` and `auth_hold` modes (a real or pending charge verifies the card); `false` for `free` mode.'
-    CheckoutConfig:
-      type: object
-      description: Configuration for how the SDK should present checkout.
-      properties:
-        sheet_type:
-          type: string
-          enum:
-          - webview
-          - native
-          description: 'Default checkout presentation: `native` for Apple Pay / Google Pay payment sheet, `webview` for embedded web checkout.'
-        is_enabled:
-          type: boolean
-          description: Whether web checkout is enabled for this app.
-        jurisdictions:
-          type: object
-          description: Per-jurisdiction checkout overrides.
-          properties:
-            us:
-              $ref: '#/components/schemas/JurisdictionConfig'
-            eu:
-              $ref: '#/components/schemas/JurisdictionConfig'
-            other:
-              $ref: '#/components/schemas/JurisdictionConfig'
-        apple_merchant_id:
-          description: Apple Merchant ID for Apple Pay, if configured.
-          type:
-          - string
-          - 'null'
     Offer:
       type: object
       description: Unified offer payload for migration and upgrade flows.
@@ -330,19 +161,140 @@ components:
           - inline
           - sheet
           description: 'How the SDK presents checkout: inline within tip card or overlay sheet.'
-    JurisdictionConfig:
+    Product:
       type: object
-      description: Checkout configuration for a specific jurisdiction.
+      description: A product in the catalog.
+      properties:
+        id:
+          type: string
+          description: The product's reference ID (e.g., `com.app.premium.monthly`).
+        display_name:
+          type: string
+          description: Human-readable product name.
+        product_description:
+          type: string
+          description: Product description text.
+        type:
+          type: string
+          enum:
+          - consumable
+          - non_consumable
+          - non_renewing_subscription
+          - auto_renewable_subscription
+          description: The product type.
+        web_price:
+          description: The web checkout price, or null if not available for web purchase.
+          allOf:
+          - $ref: '#/components/schemas/Price'
+        storekit_price:
+          description: The StoreKit price from App Store Connect, or null if not synced.
+          allOf:
+          - $ref: '#/components/schemas/Price'
+        subscription_group_id:
+          description: The subscription group this product belongs to, or null for non-subscription products.
+          type:
+          - integer
+          - 'null'
+        free_trial_duration:
+          description: ISO 8601 duration for the free trial period (e.g., `P7D` for 7 days), or null if no trial is configured.
+          type:
+          - string
+          - 'null'
+        is_trial_eligible:
+          description: Whether the current user is eligible for a free trial on this product. Null if `user_id` was not provided in the request.
+          type:
+          - boolean
+          - 'null'
+        trial:
+          description: Trial mode details for this product. Present only for `auto_renewable_subscription` products that have a free trial configured AND whose trial eligibility was resolved (i.e., `user_id` was included in the request and the user is trial-eligible). Absent for non-subscription products, products without a trial, and anonymous requests.
+          type:
+          - object
+          - 'null'
+          properties:
+            mode:
+              type: string
+              enum:
+              - free
+              - paid
+              - auth_hold
+              description: 'How the trial is collected. `free`: no charge during the trial period; the payment method is saved and billed at trial end. `paid`: a real upfront charge of `upfront_amount_cents` is collected immediately and kept; the full subscription price is billed at trial end. `auth_hold`: a temporary authorization hold of `hold_amount_cents` is placed (shown as a pending charge); released when the subscription converts or is cancelled.'
+            duration:
+              type: string
+              description: Duration token for the trial period (e.g., `1_week`, `3_days`, `1_month`). This is a ZeroSettle token, not an ISO 8601 duration. The app should map this to its own display copy.
+            upfront_amount_cents:
+              type: integer
+              description: 'For `paid` mode: the real charge collected at checkout, in cents. Zero for `free` and `auth_hold` modes.'
+            hold_amount_cents:
+              type: integer
+              description: 'For `auth_hold` mode: the authorization hold amount placed at checkout, in cents. Zero for `free` and `paid` modes.'
+            validates_card:
+              type: boolean
+              description: '`true` for `paid` and `auth_hold` modes (a real or pending charge verifies the card); `false` for `free` mode.'
+    OfferDisplay:
+      type: object
+      description: Server-configurable copy for every tip card state. Empty strings mean the SDK should use its hardcoded defaults.
+      required:
+      - offer_title
+      - offer_message
+      - offer_cta
+      - accepted_title
+      - accepted_message
+      - accepted_cta
+      - completed_title
+      - completed_message
+      properties:
+        offer_title:
+          type: string
+          description: Title for the offer card (e.g., 'Thanks for being with us!').
+        offer_message:
+          type: string
+          description: Main offer body text.
+        offer_cta:
+          type: string
+          description: CTA button text (e.g., 'Save 20% Forever').
+        accepted_title:
+          type: string
+          description: Post-checkout title (e.g., 'Thanks for switching!').
+        accepted_message:
+          type: string
+          description: Post-checkout message with Apple cancel instructions.
+        accepted_cta:
+          type: string
+          description: Post-checkout CTA (e.g., 'Cancel Apple Billing').
+        completed_title:
+          type: string
+          description: Success title (e.g., 'Congratulations!').
+        completed_message:
+          type: string
+          description: Success message (e.g., 'You are now saving 20% forever.').
+    CheckoutConfig:
+      type: object
+      description: Configuration for how the SDK should present checkout.
       properties:
         sheet_type:
           type: string
           enum:
           - webview
           - native
-          description: Checkout presentation type for this jurisdiction.
+          description: 'Default checkout presentation: `native` for Apple Pay / Google Pay payment sheet, `webview` for embedded web checkout.'
         is_enabled:
           type: boolean
-          description: Whether web checkout is enabled in this jurisdiction.
+          description: Whether web checkout is enabled for this app.
+        jurisdictions:
+          type: object
+          description: Per-jurisdiction checkout overrides.
+          properties:
+            us:
+              $ref: '#/components/schemas/JurisdictionConfig'
+            eu:
+              $ref: '#/components/schemas/JurisdictionConfig'
+            other:
+              $ref: '#/components/schemas/JurisdictionConfig'
+        apple_merchant_id:
+          description: Apple Merchant ID for Apple Pay, if configured.
+          type:
+          - string
+          - 'null'
     MigrationCampaign:
       type: object
       description: An active Switch & Save migration campaign.
@@ -376,6 +328,54 @@ components:
           type:
           - integer
           - 'null'
+    Price:
+      type: object
+      description: A price in micros (1/1,000,000 of the currency unit).
+      properties:
+        amount_micros:
+          type: integer
+          description: Price in micros. For example, $4.99 = 4990000.
+        currency_code:
+          type: string
+          description: ISO 4217 currency code (e.g., `USD`).
+    JurisdictionConfig:
+      type: object
+      description: Checkout configuration for a specific jurisdiction.
+      properties:
+        sheet_type:
+          type: string
+          enum:
+          - webview
+          - native
+          description: Checkout presentation type for this jurisdiction.
+        is_enabled:
+          type: boolean
+          description: Whether web checkout is enabled in this jurisdiction.
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Account disabled or insufficient permissions.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

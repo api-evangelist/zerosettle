@@ -124,6 +124,25 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     UpgradeExecuteResponse:
       type: object
@@ -144,28 +163,6 @@ components:
         transaction_id:
           type: string
           description: ZeroSettle transaction ID for the upgrade.
-    Price:
-      type: object
-      description: A price in micros (1/1,000,000 of the currency unit).
-      properties:
-        amount_micros:
-          type: integer
-          description: Price in micros. For example, $4.99 = 4990000.
-        currency_code:
-          type: string
-          description: ISO 4217 currency code (e.g., `USD`).
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     UpgradeOffer:
       type: object
       description: Upgrade offer eligibility and options.
@@ -198,25 +195,28 @@ components:
           type:
           - integer
           - 'null'
-  responses:
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    Price:
+      type: object
+      description: A price in micros (1/1,000,000 of the currency unit).
+      properties:
+        amount_micros:
+          type: integer
+          description: Price in micros. For example, $4.99 = 4990000.
+        currency_code:
+          type: string
+          description: ISO 4217 currency code (e.g., `USD`).
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
