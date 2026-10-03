@@ -144,6 +144,16 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
+    Price:
+      type: object
+      description: A price in micros (1/1,000,000 of the currency unit).
+      properties:
+        amount_micros:
+          type: integer
+          description: Price in micros. For example, $4.99 = 4990000.
+        currency_code:
+          type: string
+          description: ISO 4217 currency code (e.g., `USD`).
     UpgradeExecuteResponse:
       type: object
       description: Response from executing an upgrade.
@@ -207,16 +217,6 @@ components:
           description: Machine-readable error code (not always present).
       required:
       - error
-    Price:
-      type: object
-      description: A price in micros (1/1,000,000 of the currency unit).
-      properties:
-        amount_micros:
-          type: integer
-          description: Price in micros. For example, $4.99 = 4990000.
-        currency_code:
-          type: string
-          description: ISO 4217 currency code (e.g., `USD`).
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

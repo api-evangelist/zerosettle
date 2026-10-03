@@ -211,18 +211,6 @@ components:
           - string
           - 'null'
           format: date-time
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     TransactionHistoryItem:
       type: object
       description: A transaction in the user's history.
@@ -268,6 +256,18 @@ components:
           - string
           - 'null'
           format: date-time
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

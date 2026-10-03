@@ -197,6 +197,35 @@ components:
         message:
           type: string
           description: Pause option body text.
+    CancelFlowQuestion:
+      type: object
+      description: A survey question in the cancel flow.
+      properties:
+        id:
+          type: string
+          description: Question identifier.
+        text:
+          type: string
+          description: Question text to display.
+        type:
+          type: string
+          enum:
+          - single_choice
+          - multiple_choice
+          - free_text
+          description: Question type.
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Option identifier.
+              text:
+                type: string
+                description: Option text.
+          description: Available answer options (for choice questions).
     CancelFlow:
       type: object
       description: Cancel flow configuration.
@@ -256,35 +285,6 @@ components:
         message:
           type: string
           description: Offer body text.
-    CancelFlowQuestion:
-      type: object
-      description: A survey question in the cancel flow.
-      properties:
-        id:
-          type: string
-          description: Question identifier.
-        text:
-          type: string
-          description: Question text to display.
-        type:
-          type: string
-          enum:
-          - single_choice
-          - multiple_choice
-          - free_text
-          description: Question type.
-        options:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: Option identifier.
-              text:
-                type: string
-                description: Option text.
-          description: Available answer options (for choice questions).
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

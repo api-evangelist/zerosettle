@@ -168,60 +168,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  schemas:
-    ResumeResponse:
-      type: object
-      description: Response from resuming a subscription.
-      properties:
-        status:
-          type: string
-          description: Result status.
-        resumed_at:
-          type: string
-          format: date-time
-          description: When the subscription was resumed.
-    CancelResponse:
-      type: object
-      description: Response from cancelling a subscription.
-      properties:
-        status:
-          type: string
-          description: Result status.
-        cancelled_at:
-          type: string
-          format: date-time
-          description: When the cancellation was processed.
-        access_until:
-          type: string
-          format: date-time
-          description: When the user will lose access (end of billing period for non-immediate cancellations).
-    PauseResponse:
-      type: object
-      description: Response from pausing a subscription.
-      properties:
-        status:
-          type: string
-          description: Result status.
-        paused_at:
-          type: string
-          format: date-time
-          description: When the subscription was paused.
-        resumes_at:
-          type: string
-          format: date-time
-          description: When the subscription will automatically resume.
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
   responses:
     NotFound:
       description: Resource not found.
@@ -241,6 +187,60 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  schemas:
+    ResumeResponse:
+      type: object
+      description: Response from resuming a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        resumed_at:
+          type: string
+          format: date-time
+          description: When the subscription was resumed.
+    PauseResponse:
+      type: object
+      description: Response from pausing a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        paused_at:
+          type: string
+          format: date-time
+          description: When the subscription was paused.
+        resumes_at:
+          type: string
+          format: date-time
+          description: When the subscription will automatically resume.
+    CancelResponse:
+      type: object
+      description: Response from cancelling a subscription.
+      properties:
+        status:
+          type: string
+          description: Result status.
+        cancelled_at:
+          type: string
+          format: date-time
+          description: When the cancellation was processed.
+        access_until:
+          type: string
+          format: date-time
+          description: When the user will lose access (end of billing period for non-immediate cancellations).
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
