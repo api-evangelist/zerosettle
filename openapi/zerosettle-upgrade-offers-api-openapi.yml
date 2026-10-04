@@ -124,55 +124,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    NotFound:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Price:
+    Error:
       type: object
-      description: A price in micros (1/1,000,000 of the currency unit).
+      description: Error response.
       properties:
-        amount_micros:
-          type: integer
-          description: Price in micros. For example, $4.99 = 4990000.
-        currency_code:
+        error:
           type: string
-          description: ISO 4217 currency code (e.g., `USD`).
-    UpgradeExecuteResponse:
-      type: object
-      description: Response from executing an upgrade.
-      properties:
-        type:
+          description: Human-readable error message.
+        code:
           type: string
-          enum:
-          - web_to_web
-          - storekit_to_web
-          description: The type of upgrade being performed.
-        client_secret:
-          type: string
-          description: Stripe PaymentIntent client secret for confirming the upgrade payment.
-        checkout_url:
-          type: string
-          description: Fallback checkout URL.
-        transaction_id:
-          type: string
-          description: ZeroSettle transaction ID for the upgrade.
+          description: Machine-readable error code (not always present).
+      required:
+      - error
     UpgradeOffer:
       type: object
       description: Upgrade offer eligibility and options.
@@ -205,18 +169,54 @@ components:
           type:
           - integer
           - 'null'
-    Error:
+    UpgradeExecuteResponse:
       type: object
-      description: Error response.
+      description: Response from executing an upgrade.
       properties:
-        error:
+        type:
           type: string
-          description: Human-readable error message.
-        code:
+          enum:
+          - web_to_web
+          - storekit_to_web
+          description: The type of upgrade being performed.
+        client_secret:
           type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
+          description: Stripe PaymentIntent client secret for confirming the upgrade payment.
+        checkout_url:
+          type: string
+          description: Fallback checkout URL.
+        transaction_id:
+          type: string
+          description: ZeroSettle transaction ID for the upgrade.
+    Price:
+      type: object
+      description: A price in micros (1/1,000,000 of the currency unit).
+      properties:
+        amount_micros:
+          type: integer
+          description: Price in micros. For example, $4.99 = 4990000.
+        currency_code:
+          type: string
+          description: ISO 4217 currency code (e.g., `USD`).
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

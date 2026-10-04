@@ -158,25 +158,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    NotFound:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     CancelFlowPause:
       type: object
@@ -197,6 +178,65 @@ components:
         message:
           type: string
           description: Pause option body text.
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    CancelFlow:
+      type: object
+      description: Cancel flow configuration.
+      properties:
+        enabled:
+          type: boolean
+          description: Whether the cancel flow is enabled for this app.
+        questions:
+          type: array
+          description: Survey questions to show during the cancel flow.
+          items:
+            $ref: '#/components/schemas/CancelFlowQuestion'
+        offer:
+          description: Retention offer to show, or null if none is configured.
+          allOf:
+          - $ref: '#/components/schemas/CancelFlowOffer'
+        pause:
+          description: Pause option configuration, or null if pause is not enabled.
+          allOf:
+          - $ref: '#/components/schemas/CancelFlowPause'
+        variant_id:
+          description: Experiment variant ID if the cancel flow is part of an A/B test.
+          type:
+          - integer
+          - 'null'
+    CancelFlowOffer:
+      type: object
+      description: A retention offer in the cancel flow.
+      properties:
+        type:
+          type: string
+          enum:
+          - discount
+          - extension
+          description: Type of retention offer.
+        discount_percent:
+          type: integer
+          description: Discount percentage (for discount-type offers).
+        duration_months:
+          type: integer
+          description: How many billing cycles the discount lasts.
+        title:
+          type: string
+          description: Offer title text.
+        message:
+          type: string
+          description: Offer body text.
     CancelFlowQuestion:
       type: object
       description: A survey question in the cancel flow.
@@ -226,65 +266,25 @@ components:
                 type: string
                 description: Option text.
           description: Available answer options (for choice questions).
-    CancelFlow:
-      type: object
-      description: Cancel flow configuration.
-      properties:
-        enabled:
-          type: boolean
-          description: Whether the cancel flow is enabled for this app.
-        questions:
-          type: array
-          description: Survey questions to show during the cancel flow.
-          items:
-            $ref: '#/components/schemas/CancelFlowQuestion'
-        offer:
-          description: Retention offer to show, or null if none is configured.
-          allOf:
-          - $ref: '#/components/schemas/CancelFlowOffer'
-        pause:
-          description: Pause option configuration, or null if pause is not enabled.
-          allOf:
-          - $ref: '#/components/schemas/CancelFlowPause'
-        variant_id:
-          description: Experiment variant ID if the cancel flow is part of an A/B test.
-          type:
-          - integer
-          - 'null'
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
-    CancelFlowOffer:
-      type: object
-      description: A retention offer in the cancel flow.
-      properties:
-        type:
-          type: string
-          enum:
-          - discount
-          - extension
-          description: Type of retention offer.
-        discount_percent:
-          type: integer
-          description: Discount percentage (for discount-type offers).
-        duration_months:
-          type: integer
-          description: How many billing cycles the discount lasts.
-        title:
-          type: string
-          description: Offer title text.
-        message:
-          type: string
-          description: Offer body text.
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

@@ -139,26 +139,64 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    NotFound:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
+    TransactionHistoryItem:
+      type: object
+      description: A transaction in the user's history.
+      properties:
+        id:
+          type: string
+          description: Transaction ID.
+        product_id:
+          type: string
+          description: The product's reference ID.
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - succeeded
+          - failed
+          - refunded
+          - disputed
+          description: Transaction status.
+        source:
+          type: string
+          enum:
+          - web_checkout
+          - store_kit
+          description: Transaction source.
+        purchased_at:
+          type: string
+          format: date-time
+          description: Purchase timestamp.
+        amount_cents:
+          type: integer
+          description: Transaction amount in cents.
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+        product_name:
+          type: string
+          description: Display name of the product.
+        expires_at:
+          description: Subscription expiry timestamp, or null.
+          type:
+          - string
+          - 'null'
+          format: date-time
     Transaction:
       type: object
       description: A purchase transaction.
@@ -211,63 +249,25 @@ components:
           - string
           - 'null'
           format: date-time
-    TransactionHistoryItem:
-      type: object
-      description: A transaction in the user's history.
-      properties:
-        id:
-          type: string
-          description: Transaction ID.
-        product_id:
-          type: string
-          description: The product's reference ID.
-        status:
-          type: string
-          enum:
-          - pending
-          - processing
-          - succeeded
-          - failed
-          - refunded
-          - disputed
-          description: Transaction status.
-        source:
-          type: string
-          enum:
-          - web_checkout
-          - store_kit
-          description: Transaction source.
-        purchased_at:
-          type: string
-          format: date-time
-          description: Purchase timestamp.
-        amount_cents:
-          type: integer
-          description: Transaction amount in cents.
-        currency:
-          type: string
-          description: ISO 4217 currency code.
-        product_name:
-          type: string
-          description: Display name of the product.
-        expires_at:
-          description: Subscription expiry timestamp, or null.
-          type:
-          - string
-          - 'null'
-          format: date-time
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

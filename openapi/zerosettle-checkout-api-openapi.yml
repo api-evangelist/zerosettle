@@ -293,25 +293,6 @@ paths:
         '502':
           $ref: '#/components/responses/UpstreamError'
 components:
-  responses:
-    Unauthorized:
-      description: Invalid or missing API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request -- missing or malformed parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    UpstreamError:
-      description: Upstream service error (Stripe, Apple).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     PaymentIntentResponse:
       type: object
@@ -368,6 +349,18 @@ components:
           - setup
           - payment
           description: 'Discriminator for which Stripe confirm method the client must call. `setup`: confirms a SetupIntent (free trial — card saved, no immediate charge); `payment`: confirms a PaymentIntent (paid/auth_hold trial upfront charge, or any normal charge). Also returned by `POST /iap/payment-intents/{transaction_id}/finalize/` with the same semantics.'
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
     CheckoutSessionResponse:
       type: object
       description: Response from creating a checkout session.
@@ -384,18 +377,25 @@ components:
         transaction_id:
           type: string
           description: ZeroSettle transaction ID.
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request -- missing or malformed parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UpstreamError:
+      description: Upstream service error (Stripe, Apple).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
