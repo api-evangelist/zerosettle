@@ -1,0 +1,62 @@
+slug: zerosettle
+provider: ZeroSettle
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 5
+edges:
+- tag: Subscriptions
+  spec_file: zerosettle-subscriptions-api-openapi.yml
+  capability_id: BC-4240
+  capability_id_l1: BC-4240
+  capability_name: Subscription Lifecycle Management
+  confidence: 0.9
+  evidence: POST /iap/subscriptions/cancel cancelSubscription; POST /iap/subscriptions/pause pauseSubscription;
+    POST /iap/subscriptions/resume resumeSubscription
+  reason: Direct in-life subscription lifecycle operations (cancel, pause, resume) plus a self-service
+    customer portal; spans modification and cancellation so only the L1 is asserted.
+- tag: Entitlements
+  spec_file: zerosettle-entitlements-api-openapi.yml
+  capability_id: BC-4240.70
+  capability_id_l1: BC-4240
+  capability_name: Entitlement Enforcement
+  confidence: 0.85
+  evidence: GET /iap/entitlements getEntitlements; POST /iap/claim-entitlement/ claimEntitlement; schema
+    Entitlement
+  reason: Runtime resolution and claiming of subscription entitlements by the app SDK — entitlement enforcement.
+- tag: Upgrade Offers
+  spec_file: zerosettle-upgrade-offers-api-openapi.yml
+  capability_id: BC-4240.40
+  capability_id_l1: BC-4240
+  capability_name: Subscription Modification
+  confidence: 0.85
+  evidence: GET /iap/upgrade-offer getUpgradeOffer; POST /iap/upgrade-offer/execute executeUpgradeOffer;
+    schema UpgradeExecuteResponse
+  reason: Presents and executes upgrades on an active subscription — in-life subscription modification.
+- tag: Cancel Flow
+  spec_file: zerosettle-cancel-flow-api-openapi.yml
+  capability_id: BC-4240.60
+  capability_id_l1: BC-4240
+  capability_name: Cancellation & Termination
+  confidence: 0.82
+  evidence: GET /iap/cancel-flow getCancelFlow; POST /iap/cancel-flow/accept-offer acceptCancelFlowOffer;
+    schemas CancelFlowPause, CancelFlowOffer
+  reason: Operations drive the subscriber cancellation journey, presenting save offers and pause alternatives
+    before termination — subscription cancellation/termination with retention offers.
+- tag: Checkout
+  spec_file: zerosettle-checkout-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.7
+  evidence: POST /iap/payment-intents createPaymentIntent; POST /iap/checkout-sessions createCheckoutSession
+  reason: Creates payment intents and hosted checkout sessions to collect payment for subscriptions; this
+    is payment authorisation/collection in the subscription billing stack rather than contracting paperwork.
