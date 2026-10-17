@@ -134,18 +134,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      description: Error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        code:
-          type: string
-          description: Machine-readable error code (not always present).
-      required:
-      - error
     Entitlement:
       type: object
       description: A user's entitlement to a product.
@@ -213,6 +201,18 @@ components:
           - string
           - 'null'
           format: date-time
+    Error:
+      type: object
+      description: Error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        code:
+          type: string
+          description: Machine-readable error code (not always present).
+      required:
+      - error
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
